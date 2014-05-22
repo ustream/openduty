@@ -1,0 +1,127 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Openduty</title>
+  <meta name="description" content="An open source Alerting and incident escalation tool">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Openduty</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">An open source Alerting and incident escalation tool</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/ustream/openduty/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/ustream/openduty/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/ustream/openduty" class="code">View Openduty on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a name="what-is-this" class="anchor" href="#what-is-this"><span class="octicon octicon-link"></span></a>What is this?</h1>
+
+<p><strong>Openduty</strong> is an incident escalation tool, just like <a href="http://pagerduty.com">Pagerduty</a> . It has a Pagerduty compatible API too. It's the result of the first <a href="http://www.ustream.tv/blog/2014/03/27/hackathon-recap-21-ideas-11-teams-one-goal/">Ustream Hackathon</a>. We enjoyed working on it.</p>
+
+<h1>
+<a name="integrations" class="anchor" href="#integrations"><span class="octicon octicon-link"></span></a>Integrations</h1>
+
+<p>Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.</p>
+
+<h1>
+<a name="notifications" class="anchor" href="#notifications"><span class="octicon octicon-link"></span></a>Notifications</h1>
+
+<p>XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), and Push notifications(thanks Pushover also) are supported at the moment.</p>
+
+<h1>
+<a name="current-status" class="anchor" href="#current-status"><span class="octicon octicon-link"></span></a>Current status</h1>
+
+<p>Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)</p>
+
+<h1>
+<a name="contribution-guidelines" class="anchor" href="#contribution-guidelines"><span class="octicon octicon-link"></span></a>Contribution guidelines</h1>
+
+<p>Yes, please. You are welcome.</p>
+
+<h1>
+<a name="feedback" class="anchor" href="#feedback"><span class="octicon octicon-link"></span></a>Feedback</h1>
+
+<p>Any feedback is welcome</p>
+
+<h1>
+<a name="contributors-at-ustream" class="anchor" href="#contributors-at-ustream"><span class="octicon octicon-link"></span></a>Contributors at Ustream</h1>
+
+<ul>
+<li><a href="http://github.com/deathowl">deathowl</a></li>
+<li><a href="http://github.com/oker1">oker</a></li>
+<li><a href="http://github.com/tyrael">tyrael</a></li>
+<li><a href="https://github.com/dzsubek">dzsubek</a></li>
+<li><a href="https://github.com/ecsy">ecsy</a></li>
+<li><a href="https://github.com/gyim">akos</a></li>
+</ul><p><img src="http://deathowlsnest.com/images/cod.jpg" alt="The team"></p>
+
+<h1>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting started:</h1>
+
+<pre><code>sudo easy_install pip
+sudo pip install virtualenv
+virtualenv env
+. env/bin/activate
+pip install -r requirements.txt
+export DJANGO_SETTINGS_MODULE=openduty.settings_dev
+python manage.py syncdb
+python manage.py runserver
+</code></pre>
+
+<p>now, you can start hacking on it.</p>
+
+<h1>
+<a name="default-login" class="anchor" href="#default-login"><span class="octicon octicon-link"></span></a>Default login:</h1>
+
+<p>root/toor</p>
+
+<h1>
+<a name="celery-worker" class="anchor" href="#celery-worker"><span class="octicon octicon-link"></span></a>Celery worker:</h1>
+
+<p><code>celery -A openduty worker -l info</code></p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/ustream" class="avatar"><img src="https://avatars2.githubusercontent.com/u/176728?s=60" width="48" height="48"/></a> <a href="https://github.com/ustream">ustream</a> maintains <a href="https://github.com/ustream/openduty">Openduty</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/ustream/openduty/tarball/master" class="tar">tar</a><a href="https://github.com/ustream/openduty/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
