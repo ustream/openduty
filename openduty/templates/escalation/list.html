@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load static %}
+{% block content %}
+{% if messages %}
+{% endif %}
+<div class="row header">
+  <div class="col-xs-12 col-md-8"><h2>Schedule Policies</h2></div>
+  <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.escalation.new' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Escalation Policy</a></div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Policy name</th>
+            <th>Repeat</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in policies %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.repeat_times }}</td>
+
+                <td class="controls">
+                    <a href="{% url 'openduty.escalation.edit' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+                    <a href="{% url 'openduty.escalation.delete' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

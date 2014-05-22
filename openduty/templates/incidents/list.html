@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block static %}
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/no-more-tables.css" %}" >
+{% endblock %}
+
+{% load wbr %}
+
+{% block content %}
+    {% if messages %}
+    <div class="alert alert-danger">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row header">
+      <div class="col-xs-8 col-md-10"><h2>{{ title }}</h2></div>
+    <div class="col-xs-4 col-md-2 button">
+    <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Services
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="?service=all">All</a></li>
+                 <li role="presentation" class="divider"></li>
+                {% for item in services %}
+                <li><a href="?service={{item.id}}">{{ item.name }}</a></li>
+                 {% endfor %}
+            </ul>
+        </div>
+    </div>
+    </div>
+    <table id="no-more-tables" class="table">
+        <thead>
+            <tr>
+                <th>Occurred at</th>
+                <th>Id</th>
+                <th>Service name</th>
+                <th>Incident key</th>
+                <th>Event type</th>
+                <th>Description</th>
+                <th>Details</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in incidents %}
+                    {% if item.event_type == "trigger" %}
+                        <tr class="alert alert-danger">
+                    {% elif item.event_type == "acknowledge" %}
+                        <tr class="alert alert-warning">
+                    {% elif item.event_type == "resolve" %}
+                        <tr class="alert alert-success">
+                    {% else %}
+                        <tr class="alert alert-warning">
+                    {% endif %}
+                    <td data-title="Occurred at">{{ item.occurred_at }}</td>
+                    <td data-title="Id">{{ item.id }}</td>
+                    <td data-title="Service name">{{ item.service_key.name }}</td>
+                    <td data-title="Incident key">{{ item.incident_key|wbr:"_" }}</td>
+                    <td data-title="Event type">{{ item.event_type }}</td>
+                    <td data-title="Description">{{ item.description|wbr:"_" }}</td>
+                    <td data-title="Details">{{ item.details|wbr:"_" }}</td>
+                    <td data-title="Operations" class="controls">
+                        <form method="post" action="{% url 'openduty.incidents.update_type' %}">
+                            <a href="{% url 'openduty.incidents.details' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                            <input type="hidden" name="url" value="{{ url }}">
+                            {% csrf_token %}
+                            <input type="hidden" >
+                            <button type="submit" class="btn btn-default btn-sm" name="event_type" value="resolve">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button type="submit" class="btn btn-default btn-sm"name="event_type" value="acknowledge">
+                                <span class="glyphicon glyphicon-volume-off"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

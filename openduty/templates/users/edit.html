@@ -1,0 +1,107 @@
+{% extends 'users/base.html' %}
+
+{% load staticfiles %}
+{% load static %}
+
+{% block content %}
+<script type="text/javascript" src="{% static "js/jquery-ui-1.10.4.custom.min.js"%}"></script>
+
+<script>
+$( document ).ready(function() {
+    var list = $("#list");
+
+    list.sortable();
+
+    $('#add').on('click', function(e) {
+        e.preventDefault();
+        $('#empty-row').children().first().clone().appendTo(list);
+    });
+
+    list.on('click', '.remove', function () {
+        $(this).parent().remove();
+    });
+});
+</script>
+
+<div class="row header">
+    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit user{% else%}New user{% endif %}</h2></div>
+</div>
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+<form class="form-horizontal" role="form" method="post" action="{% url 'openduty.users.save' %}">
+    <input type="hidden" name="id" value="{% if item %}{{ item.id }}{% else%}0{% endif %}">
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Username</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="username" id="username" placeholder="Username" value="{% if item %}{{ item.username }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email" class="col-sm-2 control-label">Email</label>
+
+        <div class="col-sm-10">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="{% if item %}{{ item.email }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-2 control-label">Password</label>
+
+        <div class="col-sm-10">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-2 control-label">Phone number</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="phone_number" id="phone" placeholder="+36" value="{% if item %}{{ item.profile.phone_number }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="pushover_user_key" class="col-sm-2 control-label">Pushover user key</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="pushover_user_key" value="{% if item %}{{ item.profile.pushover_user_key }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="pushover_app_key" class="col-sm-2 control-label">Pushover application key</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="pushover_app_key" value="{% if item %}{{ item.profile.pushover_app_key }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Notification methods</label>
+    </div>
+
+    <div class="form-group">
+        <ol id="list" class="list-group">
+            {% for row in user_methods %}
+            {% include 'users/notification_method.html' with current=row methods=methods only %}
+            {% endfor %}
+        </ol>
+    </div>
+    <div class="form-group">
+    <button id="add">Add new notification method</button>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
+    </div>
+    {% csrf_token %}
+</form>
+
+<div style="display:none" id="empty-row">
+{% include 'users/notification_method.html' with current=empty_user_method methods=methods only %}
+</div>
+{% endblock %}

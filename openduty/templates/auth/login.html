@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block static %}
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/login.css" %}" >
+{% endblock %}
+
+{% block content %}
+        <div class="center-block login">
+            <form role="form" method="post" action="{% url 'openduty.auth.do' %}">
+              <div class="form-group">
+                <label for="userName">User name:</label>
+                <input type="text" class="form-control" name="username" id="userName" placeholder="User name">
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+              </div>
+              <button type="submit" class="btn btn-default">Login</button>
+              {% csrf_token %}
+            </form>
+        </div>
+{% endblock %}

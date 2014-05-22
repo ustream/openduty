@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="center-block">
+    <div class="row header">
+        <div style="text-align: center"><h2>Incident details</h2></div>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Service name</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.service_key.name }}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Occurred at</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.occurred_at }}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Incident key</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.incident_key }}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Incident event type</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.event_type }}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Incident description</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.description }}</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-6 control-label">Incident details</label>
+
+            <div class="col-sm-6">
+                <p class="form-control-static">{{ item.details }}</p>
+            </div>
+        </div>
+    </div>
+    <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.update_type' %}">
+        <input type="hidden" name="id" value="{{ item.id }}">
+        <input type="hidden" name="url" value="{{ url }}">
+        {% csrf_token %}
+        <div class="form-group" style="text-align: center">
+                <button name="event_type" value="acknowledge" type="submit" class="btn btn-warning">Acknowledge</button>
+                <button name="event_type" value="resolve" type="submit" class="btn btn-success">Resolve</button>
+        </div>
+    </form>
+    <div class="form-horizontal" style ="padding-left: 50px;">
+        <div class="form-group">
+            <label class="col-sm-5 control-label">Forward to</label>
+            <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.forward_incident' %}">
+                <input type="hidden" name="id" value="{{ item.id }}">
+                <input type="hidden" name="url" value="{{ url }}">
+                {% csrf_token %}
+                       <select name="user_id">
+                        {% for user in users %}
+                         <option value="{{user.id}}">{{user.username}}</option>
+                         {% endfor %}
+                         </select>
+               <input type="submit" value="Forward"  class="btn btn-info">
+           </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

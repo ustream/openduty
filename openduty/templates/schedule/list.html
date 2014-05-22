@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load scheduletags %}
+
+{% block content %}
+ <div class="row header">
+      <div class="col-xs-12 col-md-8"><h2>Schedules</h2></div>
+      <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.schedules.new' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New schedule</a></div>
+    </div>
+<ul>
+{% for cal in schedules %}
+<li><b>{{ cal }}</b> :
+  <a href="{% url "openduty.schedules.details" cal.id %}">View Calendar</a>
+{% endfor %}
+</ul>
+{% endblock %}

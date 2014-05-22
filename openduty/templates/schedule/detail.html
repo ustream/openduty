@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load scheduletags %}
+{% load staticfiles %}
+{% load static %}
+{% block content %}
+    <script>
+    function openDetail(node){
+      var eventId = node.getAttribute("href").split("_")[1];
+      var editUrl = "/events/edit/{{calendar.slug}}/".concat(eventId);
+      var destroyUrl = "/events/destroy/{{calendar.slug}}/".concat(eventId);
+      var btns = { "Close":function(){$(this).dialog("destroy");}, "Edit":function(){window.location=editUrl;}, "Destroy":function(){window.location=destroyUrl;}};
+      dia = $("#edit_dialog").dialog({'buttons':btns, 'modal':true});
+      dia = $($(node).attr("href")).dialog({'buttons':btns, 'modal':true, 'title':'Details'});
+      dia.dialog('open');
+      return false;
+    }
+
+    $( document ).ready(function() {
+        $("tr a").attr("href", "#")
+
+    });
+    </script>
+    <link rel="stylesheet" href="{% static "schedule/css/schedule.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "schedule/css/jquery-ui.css" %}" type="text/css" media="screen" />
+    <script type="text/javascript" src="{% static "schedule/js/jquery.js" %}"></script>
+    <script type="text/javascript" src="{% static "schedule/js/jquery-ui.js" %}"></script>
+    <div class="row header">
+      <div class="col-xs-12 col-md-8"><h2>{{ calendar.name }}</h2></div>
+      <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.events.create_or_edit_event' calendar.slug %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Event</a></div>
+    </div>
+    <div style="align-content: center">
+        <div class="tablewrapper">
+          {% month_table calendar periods.month "regular" %}
+        </div>
+    </div>
+{% endblock %}

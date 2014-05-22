@@ -1,0 +1,28 @@
+body {
+  min-height: 600px;
+}
+
+.navbar {
+    height: auto;
+    padding-bottom: 10px;
+}
+
+.header h2, .header h3 {
+    margin-top: 0px
+}
+
+.header .button {
+    text-align: right;
+}
+
+.countdown_wrapper {
+    width: 300px;
+    padding: 0px !important;
+    color: white;
+}
+
+.countdown {
+    height: 50px;
+    background: transparent !important;
+    border: 0px !important;
+}

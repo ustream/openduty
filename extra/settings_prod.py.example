@@ -1,0 +1,40 @@
+from settings import *
+
+
+BASE_URL = "https://your.dutyfree.host"
+
+XMPP_SETTINGS = {
+    'user': "alerting@yourorganisation.org",
+    'password': "YourPassword",
+    'server': 'your.xmpp.host',
+    'port': 5222,
+}
+
+EMAIL_SETTINGS = {
+    'user': "alerting@yourorganisation.org",
+    'password': "YourPassword",
+}
+
+TWILIO_SETTINGS = {
+    'SID': "TWILIO_ACCOUNT_SID",
+    'token': "TWILIO_ACCOUNT_TOKEN",
+    'phone_number': "your_twilio_phone_number",
+    'sms_number': "your_twilio_sms_number",
+    'twiml_url': "http://www.website.org/voice.xml"
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'yourmysqluser',
+        'USER': 'yourdbname',
+        'PASSWORD': 'yourdbpassword',
+        'HOST': 'yourdbhost',
+        'PORT': 'yourdbport'
+    }
+}
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'yoursecretkey'
+
+ALLOWED_HOSTS = ['your.dutyfree.host']

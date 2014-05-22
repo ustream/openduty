@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load static %}
+{% block content %}
+<script type="text/javascript" src="{% static "js/jquery-ui-1.10.4.custom.min.js"%}"></script>
+
+<script>
+$( document ).ready(function() {
+    var list = $( "#list" );
+
+    list.sortable();
+
+    $('#add').on('click', function () {
+        list.append(
+            '<li class="list-group-item">' +
+                '<label for="escalate_after" class="col-sm-2 control-label">Calendar or user:</label>'+
+                '<div class="col-sm-1">'+
+                    '<select id="escalate_after[]" name="escalate_to[]" class="form-control">'+
+                        '<optgroup label="Calendars">'+
+                        {% for item in calendars %}
+                        '<option value="calendar|{{item.id}}" >{{item.name}}</option>'+
+                        {% endfor %}
+                        '<optgroup label="People">'+
+                         {% for item in users %}
+                        '<option value="user|{{item.id}}" >{{ item.username }}</option>'+
+                        {% endfor %}
+                    '</select>'+
+                '</div>'+
+                '<button  class="remove btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button>'+
+            '</li>'
+        );
+        return false
+    });
+
+    list.on('click', '.remove', function () {
+        $(this).parent().remove();
+    });
+});
+</script>
+
+<div class="row header">
+    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit escalation-policy{% else%}New escalation-policy{% endif %}</h2></div>
+</div>
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+<form class="form-horizontal" role="form" method="post" action="{% url 'openduty.escalation.save' %}">
+    <input type="hidden" name="id" value="{% if item %}{{ item.id }}{% else%}0{% endif %}">
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Policy name</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" id="name" placeholder="Policy name" value="{% if item %}{{ item.name }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Repeat" class="col-sm-2 control-label">Repeat</label>
+
+        <div class="col-sm-10">
+            <input type="number" class="form-control" name="repeat" id="repeat" placeholder="Repeat X times" value="{% if item %}{{ item.repeat_times }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Elements of the escalation policy</label>
+    </div>
+
+    <div class="form-group">
+        <ol id="list" class="list-group">
+             {% for row in elements %}
+            <li class="list-group-item">
+                <label for="escalate_after" class="col-sm-2 control-label">Calendar or user:</label>
+                <div class="col-sm-1">
+                <select id="escalate_after[]" name="escalate_to[]" class="form-control">
+                            <optgroup label="Calendars">
+                            {% for item in calendars %}
+                            <option value="calendar|{{item.id}}" {% if row.schedule.id == item.id %}selected{% endif %} >{{item.name}}</option>
+                            {% endfor %}
+                            </optgroup>
+                            <optgroup label="People">
+                             {% for item in users %}
+                            <option value="user|{{item.id}}" {% if row.user_id.id == item.id %}selected{% endif %} >{{ item.username }}</option>
+                            {% endfor %}
+                            </optgroup>
+                 </select>
+                </div>
+                <button  class="remove btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div class="form-group">
+    <button id="add">Add new element to the escalation policy</button>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" id="save">Save</button>
+        </div>
+    </div>
+    {% csrf_token %}
+</form>
+
+
+
+
+{% endblock %}

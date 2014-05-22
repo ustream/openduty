@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row header">
+    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit service{% else%}New service{% endif %}</h2></div>
+</div>
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+<form class="form-horizontal" role="form" method="post" action="{% url 'openduty.services.save' %}">
+    <input type="hidden" name="id" value="{% if item %}{{ item.id }}{% else%}0{% endif %}">
+    {% if item %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Service id</label>
+
+        <div class="col-sm-10">
+            <p class="form-control-static">{{ item.id }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Service name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" id="name" placeholder="Service name" value="{% if item %}{{ item.name }}{% endif %}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="calendar" class="col-sm-2 control-label">Escalation rule</label>
+        <div class="col-sm-10">
+            <select id="policy" name="policy" class="form-control">
+                <option value="" {% if policy == None %}selected{% endif %}>-</option>
+                {% for c in policies %}
+                <option value="{{ c.id }}" {% if policy.id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="retry" class="col-sm-2 control-label">Retry after:</label>
+        <div class="col-sm-1">
+            <select id="retry" name="retry" class="form-control">
+                <option value="1" {% if item.retry == 1 %}selected{% endif %}>1 min.</option>
+                <option value="2" {% if item.retry == 2 %}selected{% endif %}>2 min.</option>
+                <option value="3" {% if item.retry == 3 %}selected{% endif %}>3 min.</option>
+                <option value="4" {% if item.retry == 4 %}selected{% endif %}>4 min.</option>
+                <option value="5" {% if item.retry == 5 %}selected{% endif %}>5 min.</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="escalate_after" class="col-sm-2 control-label">Escalate after:</label>
+        <div class="col-sm-1">
+            <select id="escalate_after" name="escalate_after" class="form-control">
+               <option value="1" {% if item.escalate_after == 1 %}selected{% endif %}>1 min.</option>
+               <option value="2" {% if item.escalate_after == 2 %}selected{% endif %}>2 min.</option>
+               <option value="3" {% if item.escalate_after == 3 %}selected{% endif %}>3 min.</option>
+               <option value="4" {% if item.escalate_after == 4 %}selected{% endif %}>4 min.</option>
+               <option value="5" {% if item.escalate_after == 5 %}selected{% endif %}>5 min.</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
+    </div>
+    {% csrf_token %}
+</form>
+{% if item %}
+<div class="row header">
+    <div class="col-xs-12 col-md-8"><h3>API Keys</h3></div>
+    <div class="col-xs-6 col-md-4 button">
+        <form class="form-inline" role="form" method="post" action="{% url 'openduty.services.token_create' item.id %}">
+            <div class="form-group">
+                <label class="sr-only" for="key_name">API Key Name</label>
+                <input type="text" class="form-control" id="key_name" name="key_name" placeholder="API Key Name">
+            </div>
+            <button type="submit" class="btn btn-default">Create API Key</button>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>API Key Name</th>
+            <th>API Key</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for api_key in api_keys %}
+            <tr>
+                <td>{{ api_key.name }}</td>
+                <td>{{ api_key.token_id_id }}</td>
+                <td class="controls">
+                    <a href="{% url 'openduty.services.token_delete' api_key.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

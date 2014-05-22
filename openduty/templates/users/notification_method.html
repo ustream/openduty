@@ -1,0 +1,13 @@
+<li class="list-group-item">
+    <label for="method" class="col-sm-2 control-label">Method:</label>
+    <div class="col-sm-1">
+    <select name="methods[]" class="form-control">
+        <optgroup label="Methods">
+        {% for item in methods %}
+        <option value="{{item}}" {% if current.method == item %}selected{% endif %} >{{item}}</option>
+        {% endfor %}
+        </optgroup>
+     </select>
+    </div>
+    <button  class="remove btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button>
+</li>

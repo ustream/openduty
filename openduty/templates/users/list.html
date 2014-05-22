@@ -1,0 +1,33 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <div class="row header">
+      <div class="col-xs-12 col-md-8"><h2>Users</h2></div>
+      <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.users.new' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New user</a></div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User name</th>
+                <th>E-mail</th>
+                <th>Phone</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in users %}
+                <tr class="">
+                    <td>{{ item.username }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.profile.phone_number }}</td>
+                    <td class="controls">
+                        <a href="{% url 'openduty.users.edit' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+                        {% if item.id != user.id %}
+                        <a href="{% url 'openduty.users.delete' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

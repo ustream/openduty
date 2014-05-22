@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DutyFree</title>
+    {% load staticfiles %}
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
+    <link rel="stylesheet" href="{% static "css/base.css" %}" >
+    <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.plugin.min.js"%}"></script>
+
+    {% block static %}
+    {% endblock %}
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            {% if user.is_authenticated %}
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'openduty.event_log.list' %}">OpenDuty</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'openduty.event_log.list' %}">Dashboard</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Incidents <b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation">
+                                <a href="{% url 'openduty.incidents.unhandled' %}">Unhandled</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="{% url 'openduty.incidents.acknowledged' %}">Acknowledged</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="{% url 'openduty.incidents.list' %}">All</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'openduty.services.list' %}">Services</a></li>
+                    <li><a href="{% url 'openduty.escalation.list' %}">Escalation Policies</a></li>
+                    <li><a href="{% url 'openduty.schedules.list' %}">On-Call Schedules</a></li>
+                    <li><a href="{% url 'openduty.users.list' %}">Users</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="#">{{ user.username }}<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li role="presentation">
+                                <a href="{% url 'openduty.users.edit' user.id %}">Account</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="{% url 'openduty.auth.logout' %}">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+    {% block content %}
+    {% endblock %}
+    </div>
+</body>
+</html>
