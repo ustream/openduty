@@ -13,3 +13,4 @@ pyasn1_modules
 dnspython
 oauth2client
 sleekxmpp
+dj-database-url

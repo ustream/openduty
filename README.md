@@ -12,6 +12,35 @@ Yes, please. You are welcome.
 #Feedback
 Any feedback is welcome
 
+#Try it
+go to http://openduty.herokuapp.com , log in with root/toor , create your own user.
+In heroku demo mode user edit feature is disabled, so you can't misbehave.
+
+#Running on Heroku
+add the parts below to your settings.py and add psycopg2==2.5.1 to your requirements.txt
+
+```
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+```
+
 #Contributors at Ustream
 - [deathowl](http://github.com/deathowl)
 - [oker](http://github.com/oker1)
