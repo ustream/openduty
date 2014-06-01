@@ -108,6 +108,9 @@ EMAIL_SETTINGS = {
 TWILIO_SETTINGS = {
 }
 
+SLACK_SETTINGS = {
+}
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 

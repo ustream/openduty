@@ -21,6 +21,8 @@ def send_notifications(notification_id):
             notifier = TwilioSmsNotifier(settings.TWILIO_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_TWILIO_CALL:
             notifier = TwilioCallNotifier(settings.TWILIO_SETTINGS)
+        if notification.notifier == UserNotificationMethod.METHOD_SLACK:
+            notifier = SlackNotifier(settings.SLACK_SETTINGS)
         elif notification.notifier == UserNotificationMethod.METHOD_PUSHOVER:
             notifier = PushoverNotifier()
         notifier.notify(notification)
