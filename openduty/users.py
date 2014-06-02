@@ -77,6 +77,7 @@ def save(request):
         profile.phone_number = request.POST['phone_number']
         profile.pushover_user_key = request.POST['pushover_user_key']
         profile.pushover_app_key = request.POST['pushover_app_key']
+        profile.slack_room_name = request.POST['slack_room_name']
         profile.save()
 
         return HttpResponseRedirect('/');

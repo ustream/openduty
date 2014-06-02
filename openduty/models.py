@@ -187,6 +187,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=50)
     pushover_user_key = models.CharField(max_length=50)
     pushover_app_key = models.CharField(max_length=50)
+    slack_room_name = models.CharField(max_length=50)
 
 
 def create_user_profile(sender, instance, created, **kwargs):

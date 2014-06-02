@@ -23,6 +23,11 @@ TWILIO_SETTINGS = {
     'twiml_url': "http://www.website.org/voice.xml"
 }
 
+SLACK_SETTINGS = {
+    'apikey': "YOUR_SLACK_API_KEY"
+}
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
