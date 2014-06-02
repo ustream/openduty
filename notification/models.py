@@ -18,8 +18,9 @@ class UserNotificationMethod(models.Model):
     METHOD_EMAIL = 'email'
     METHOD_PUSHOVER = 'pushover'
     METHOD_XMPP = 'xmpp'
+    METHOD_SLACK = 'slack'
 
-    methods = [METHOD_XMPP, METHOD_PUSHOVER, METHOD_EMAIL, METHOD_TWILIO_SMS, METHOD_TWILIO_CALL]
+    methods = [METHOD_XMPP, METHOD_PUSHOVER, METHOD_EMAIL, METHOD_TWILIO_SMS, METHOD_TWILIO_CALL, METHOD_SLACK]
 
     user = models.ForeignKey(User, related_name='notification_methods')
     position = models.IntegerField()

@@ -14,3 +14,4 @@ dnspython
 oauth2client
 sleekxmpp
 dj-database-url
+slacker
