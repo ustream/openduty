@@ -6,6 +6,7 @@ from notification.notifier.xmpp import XmppNotifier
 from notification.notifier.email import EmailNotifier
 from notification.notifier.twilio_sms import TwilioSmsNotifier
 from notification.notifier.twilio_call import TwilioCallNotifier
+from notification.notifier.slack import SlackNotifier
 from notification.models import ScheduledNotification, UserNotificationMethod
 from django.conf import settings
 
