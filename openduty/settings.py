@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'openduty.templatetags',
     'schedule',
     'djcelery',
+    'south',
     'notification',
 )
 

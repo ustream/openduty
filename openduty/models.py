@@ -8,7 +8,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
-from oauth2client.django_orm import CredentialsField
 from uuidfield import UUIDField
 from django.core.exceptions import ValidationError
 from schedule.models import Calendar
@@ -170,18 +169,6 @@ class SchedulePolicyRule(models.Model):
     def __str__(self):
         return self.id
 
-@python_2_unicode_compatible
-class CalendarSource(models.Model):
-    name = models.CharField(max_length=80, unique=True)
-    oauth2_credentials = CredentialsField()
-
-    class Meta:
-        verbose_name = _('calendar_source')
-        verbose_name_plural = _('calendar_sources')
-
-    def __str__(self):
-        return self.name
-
 class UserProfile(models.Model):
     user = models.OneToOneField('auth.User', related_name='profile')
     phone_number = models.CharField(max_length=50)
@@ -200,20 +187,3 @@ signals.post_syncdb.disconnect(
     create_superuser,
     sender=auth_models,
     dispatch_uid='django.contrib.auth.management.create_superuser')
-
-
-# Create our own root user automatically.
-
-def create_testuser(app, created_models, verbosity, **kwargs):
-  try:
-    auth_models.User.objects.get(username='root')
-  except auth_models.User.DoesNotExist:
-    print '*' * 80
-    print 'Creating root user -- login: root, password: toor'
-    print '*' * 80
-    assert auth_models.User.objects.create_superuser('root', 'admin@localhost', 'toor')
-  else:
-    print 'Test user already exists.'
-
-signals.post_syncdb.connect(create_testuser,
-    sender=auth_models, dispatch_uid='common.models.create_testuser')

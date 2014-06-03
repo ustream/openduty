@@ -60,10 +60,23 @@ virtualenv env
 pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=openduty.settings_dev
 python manage.py syncdb
+python manage.py migrate
 python manage.py runserver
 ```
 now, you can start hacking on it.
 
+# After models you've changed your models please run:
+```
+./manage.py schemamigration openduty --auto
+./manage.py schemamigration notification --auto
+./manage.py migrate
+
+```
+
+#If you see a new file appearing in migrations directory when pulling from upstream please run
+```
+./manage.py migrate
+```
 
 # Default login:
 root/toor
