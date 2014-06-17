@@ -77,6 +77,7 @@ urlpatterns = patterns('',
     #INCIDENTS
     url(r'^incidents/$', 'openduty.incidents.list'),
     url(r'^incidents/unhandled$', 'openduty.incidents.unhandled'),
+    url(r'^incidents/unhandled/on-call$', 'openduty.incidents.unhandled_for_on_call_user'),
     url(r'^incidents/acknowledged$', 'openduty.incidents.acknowledged'),
     url(r'^incidents/details/(.*)$', 'openduty.incidents.details'),
     url(r'^incidents/update_type$', 'openduty.incidents.update_type'),

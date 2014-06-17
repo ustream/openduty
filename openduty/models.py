@@ -169,6 +169,10 @@ class SchedulePolicyRule(models.Model):
     def __str__(self):
         return self.id
 
+    @classmethod
+    def getRulesForService(cls, service):
+        return cls.objects.filter(schedule_policy=service.policy)
+
 class UserProfile(models.Model):
     user = models.OneToOneField('auth.User', related_name='profile')
     phone_number = models.CharField(max_length=50)
