@@ -59,7 +59,7 @@ def save(request):
     try:
         user.save()
         try:
-            UserNotificationMethod.objects.filter(user = user).delete()
+            UserNotificationMethod.objects.filter(user=user).delete()
         except UserNotificationMethod.DoesNotExist:
             pass #Nothing to clear
         methods = request.POST.getlist('methods[]')
@@ -70,10 +70,10 @@ def save(request):
             method.position = idx +1
             method.save()
         try:
-            profile = request.user.get_profile()
+            profile = user.get_profile()
         except UserProfile.DoesNotExist:
             profile = UserProfile()
-            profile.user = request.user
+            profile.user = user
         profile.phone_number = request.POST['phone_number']
         profile.pushover_user_key = request.POST['pushover_user_key']
         profile.pushover_app_key = request.POST['pushover_app_key']
