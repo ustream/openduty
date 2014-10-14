@@ -17,7 +17,7 @@ def send_notifications(notification_id):
         if notification.notifier == UserNotificationMethod.METHOD_XMPP:
             notifier = XmppNotifier(settings.XMPP_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_EMAIL:
-            notifier = EmailNotifier(settings.XMPP_SETTINGS)
+            notifier = EmailNotifier(settings.EMAIL_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_TWILIO_SMS:
             notifier = TwilioSmsNotifier(settings.TWILIO_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_TWILIO_CALL:
