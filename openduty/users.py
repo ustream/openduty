@@ -80,7 +80,7 @@ def save(request):
         profile.slack_room_name = request.POST['slack_room_name']
         profile.save()
 
-        return HttpResponseRedirect('/');
+        return HttpResponseRedirect(reverse('openduty.users.list'))
     except IntegrityError:
         messages.error(request, 'Username already exists.')
         if int(request.POST['id']) > 0:
