@@ -32,7 +32,7 @@ class UserNotificationMethod(models.Model):
         db_table = 'openduty_usernotificationmethod'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 @python_2_unicode_compatible
@@ -49,7 +49,7 @@ class ScheduledNotification(models.Model):
         db_table = 'openduty_schedulednotification'
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     @staticmethod
     def remove_all_for_incident(incident):
