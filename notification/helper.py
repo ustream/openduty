@@ -38,7 +38,7 @@ class NotificationHelper(object):
             escalation_time = incident.service_key.escalate_after * (officer_index + 1)
             escalate_at = current_time + timedelta(minutes=escalation_time)
 
-            methods = duty_officer.notification_methods.all()
+            methods = duty_officer.notification_methods.order_by('position').all()
             method_index = 0
 
             for method in methods:
@@ -70,7 +70,7 @@ class NotificationHelper(object):
         now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
         current_time = now
         notifications = []
-        methods = user.notification_methods.all()
+        methods = user.notification_methods.order_by('position').all()
         method_index = 0
 
         for method in methods:
