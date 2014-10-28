@@ -111,7 +111,7 @@ class Incident(models.Model):
     Incidents are representations of a malfunction in the system.
     """
     service_key = models.ForeignKey(Service)
-    incident_key = models.CharField(max_length=80)
+    incident_key = models.CharField(max_length=200)
     event_type = models.CharField(max_length=15)
     description = models.CharField(max_length=100)
     details = models.TextField()
