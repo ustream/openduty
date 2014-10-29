@@ -12,7 +12,6 @@ class EmailNotifier:
         FROM = self.__config['user']
         TO = [notification.user_to_notify.email]
         SUBJECT = "Openduty Incident Report [#{0}]".format(notification.incident.id)
-        print SUBJECT
         TEXT =  notification.message
         message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
             """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
