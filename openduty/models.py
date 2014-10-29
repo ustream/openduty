@@ -113,7 +113,7 @@ class Incident(models.Model):
     service_key = models.ForeignKey(Service)
     incident_key = models.CharField(max_length=200)
     event_type = models.CharField(max_length=15)
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=200)
     details = models.TextField()
     occurred_at = models.DateTimeField()
 
