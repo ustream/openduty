@@ -42,25 +42,15 @@
     <div class="form-group">
         <label for="retry" class="col-sm-2 control-label">Retry after:</label>
         <div class="col-sm-1">
-            <select id="retry" name="retry" class="form-control">
-                <option value="1" {% if item.retry == 1 %}selected{% endif %}>1 min.</option>
-                <option value="2" {% if item.retry == 2 %}selected{% endif %}>2 min.</option>
-                <option value="3" {% if item.retry == 3 %}selected{% endif %}>3 min.</option>
-                <option value="4" {% if item.retry == 4 %}selected{% endif %}>4 min.</option>
-                <option value="5" {% if item.retry == 5 %}selected{% endif %}>5 min.</option>
-            </select>
+            <input type="number" class="form-control" name="retry" id="retry" value="{{ item.retry|default:"1" }}">
+            <p class="help-block">minute(s)</p>
         </div>
     </div>
     <div class="form-group">
         <label for="escalate_after" class="col-sm-2 control-label">Escalate after:</label>
         <div class="col-sm-1">
-            <select id="escalate_after" name="escalate_after" class="form-control">
-               <option value="1" {% if item.escalate_after == 1 %}selected{% endif %}>1 min.</option>
-               <option value="2" {% if item.escalate_after == 2 %}selected{% endif %}>2 min.</option>
-               <option value="3" {% if item.escalate_after == 3 %}selected{% endif %}>3 min.</option>
-               <option value="4" {% if item.escalate_after == 4 %}selected{% endif %}>4 min.</option>
-               <option value="5" {% if item.escalate_after == 5 %}selected{% endif %}>5 min.</option>
-            </select>
+            <input type="number" class="form-control" name="escalate_after" id="escalate_after" value="{{ item.escalate_after|default:"1" }}">
+            <p class="help-block">minute(s)</p>
         </div>
     </div>
     <div class="form-group">
