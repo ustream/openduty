@@ -45,7 +45,7 @@ def details(request, id,  periods=None):
         date = coerce_date_dict(request.GET)
         if date:
             try:
-                date = datetime.datetime(**date)
+                date = datetime(**date)
             except ValueError:
                 raise Http404
         else:

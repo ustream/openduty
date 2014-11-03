@@ -4,3 +4,4 @@ env/*
 database.sql
 .DS_Store
 openduty/settings_dev.py
+*.swp
