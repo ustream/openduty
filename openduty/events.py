@@ -63,7 +63,8 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         "data": data,
         "calendar": calendar,
         "next":next,
-        "users":users
+        "users":users,
+        "form": form,
     }, context_instance=RequestContext(request))
 
 @check_event_permissions

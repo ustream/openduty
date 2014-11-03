@@ -77,6 +77,10 @@
 
           </tr>
           <tr>
+             <th>Recurring</th>
+             <td>{{ form.rule }}</td>
+          </tr>
+          <tr>
              <th><label for="id_description">Description:</label></th>
              <td><textarea cols="40" id="id_description" name="description" rows="10">{% if data.description %} {{data.description}}{% endif %}</textarea></td>
           </tr>
