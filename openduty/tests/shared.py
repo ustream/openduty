@@ -4,7 +4,7 @@ import string
 import random
 from django.contrib.auth import models as auth_models
 
-def string_generator(size=6, chars=string.ascii_uppercase + string.digits):
+def random_string(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 class LoggedInTestCase(unittest.TestCase):
@@ -12,8 +12,8 @@ class LoggedInTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = Client()
-        cls.username = string_generator()
-        cls.password = string_generator()
+        cls.username = random_string()
+        cls.password = random_string()
         cls.user = auth_models.User.objects.create_superuser(
             cls.username,
             'test@localhost',

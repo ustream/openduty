@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from schedule.models import Calendar, Event, Rule
-from .shared import LoggedInTestCase, string_generator
+from .shared import LoggedInTestCase, random_string
 from datetime import timedelta
 from django.utils import timezone
 
@@ -9,14 +9,14 @@ class TestEventViews(LoggedInTestCase):
     def setUp(self):
         super(TestEventViews, self).setUp()
         self.cal = Calendar(
-            name=string_generator(),
-            slug=string_generator(),
+            name=random_string(),
+            slug=random_string(),
         )
         self.cal.save()
         self.event = Event(
             start=timezone.now(),
             end=timezone.now() + timedelta(weeks=6),
-            title=string_generator(),
+            title=random_string(),
             calendar=self.cal,
         )
         self.event.save()
@@ -32,8 +32,8 @@ class TestEventViews(LoggedInTestCase):
     def test_event_can_be_recurring(self):
         from dateutil.rrule import WEEKLY
         rule = Rule(
-            name=string_generator(),
-            description=string_generator(),
+            name=random_string(),
+            description=random_string(),
             frequency=WEEKLY,
         )
         rule.save()

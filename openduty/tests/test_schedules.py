@@ -1,14 +1,14 @@
 from django.core.urlresolvers import reverse
 from schedule.models import Calendar
-from .shared import LoggedInTestCase, string_generator
+from .shared import LoggedInTestCase, random_string
 
 class TestSchedulesViews(LoggedInTestCase):
 
     def setUp(self):
         super(TestSchedulesViews, self).setUp()
         self.cal = Calendar(
-            name=string_generator(),
-            slug=string_generator(),
+            name=random_string(),
+            slug=random_string(),
         )
         self.cal.save()
 
