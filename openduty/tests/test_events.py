@@ -30,11 +30,10 @@ class TestEventViews(LoggedInTestCase):
             pass
 
     def test_event_can_be_recurring(self):
-        from dateutil.rrule import WEEKLY
         rule = Rule(
             name=random_string(),
             description=random_string(),
-            frequency=WEEKLY,
+            frequency='WEEKLY',
         )
         rule.save()
         try:
