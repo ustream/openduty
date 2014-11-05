@@ -18,12 +18,12 @@ def get_escalation_for_service(service):
                     # must be a better way to ask an event if x date falls within
                     # an occurence
                     for o in event.get_occurrences(now, now+timedelta(days=32)):
-                        if o.start <= now and o.end >= o.end:
+                        if o.start <= now <= o.end:
                             usernames = event.title.split(',')
                             for username in usernames:
                                 result.append(User.objects.get(username=username.strip()))
                             break
-                elif event.start <= now and event.end >= event.end:
+                elif event.start <= now <= event.end:
                     usernames = event.title.split(',')
                     for username in usernames:
                         result.append(User.objects.get(username=username.strip()))

@@ -50,6 +50,20 @@ class TestGetEscalation(BaseTestCase):
         finally:
             event.delete()
 
+    def test_get_escalation_works_with_no_recurrence_fails_after_end(self):
+        event = Event(
+            start = timezone.now() - timedelta(days=2),
+            end = timezone.now() - timedelta(days=1),
+            title = '{username},{username}'.format(username=self.username),
+            calendar = self.cal,
+        )
+        event.save()
+        try:
+            events = get_escalation_for_service(self.service)
+            self.assertEqual(0, len(events))
+        finally:
+            event.delete()
+
     def test_get_escalation_empty_when_recurrance_is_not_now(self):
         rule = Rule(
             name=random_string(),
