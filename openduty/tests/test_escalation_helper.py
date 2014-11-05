@@ -50,7 +50,7 @@ class TestGetEscalation(BaseTestCase):
         finally:
             event.delete()
 
-    def test_get_escalation_works_with_no_recurrence_fails_after_end(self):
+    def test_get_escalation_fails_with_no_recurrence_after_event_end(self):
         event = Event(
             start = timezone.now() - timedelta(days=2),
             end = timezone.now() - timedelta(days=1),
