@@ -46,7 +46,6 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
             event.calendar = calendar
         event.save()
         return HttpResponseRedirect(reverse('openduty.schedules.details', None, [calendar.id]))
-
     if instance is not None:
         officers = instance.title.split(",")
         data["oncall"] = officers[0]
@@ -56,6 +55,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         data["end_ymd"] = instance.end.date().isoformat()
         data["end_hour"] = instance.end.time().strftime("%H:%M")
         data["description"] = instance.description
+        data["rule"] = instance.rule and instance.rule.id or ""
 
 
     next = get_next_url(request, next)
@@ -63,7 +63,8 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         "data": data,
         "calendar": calendar,
         "next":next,
-        "users":users
+        "users":users,
+        "form": form,
     }, context_instance=RequestContext(request))
 
 @check_event_permissions

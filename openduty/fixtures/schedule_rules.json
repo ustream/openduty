@@ -1,0 +1,32 @@
+[
+{
+    "pk": 1, 
+    "model": "schedule.rule", 
+    "fields": {
+        "frequency": "DAILY", 
+        "params": null, 
+        "name": "Daily", 
+        "description": "Daily"
+    }
+},
+{
+    "pk": 2, 
+    "model": "schedule.rule", 
+    "fields": {
+        "frequency": "WEEKLY", 
+        "params": null, 
+        "name": "Weekly", 
+        "description": "Weekly"
+    }
+},
+{
+    "pk": 3, 
+    "model": "schedule.rule", 
+    "fields": {
+        "frequency": "MONTHLY", 
+        "params": null, 
+        "name": "Monthly", 
+        "description": "Monthly"
+    }
+}
+]

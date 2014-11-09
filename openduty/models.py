@@ -167,7 +167,7 @@ class SchedulePolicyRule(models.Model):
         verbose_name_plural = _('schedule_policy_rules')
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     @classmethod
     def getRulesForService(cls, service):
