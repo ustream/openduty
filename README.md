@@ -50,6 +50,10 @@ STATICFILES_DIRS = (
 - [akos](https://github.com/gyim)
 
 ![The team](http://deathowlsnest.com/images/cod.jpg)
+#Other contributors
+- [DazWorrall](https://github.com/DazWorrall)
+- [leventyalcin](https://github.com/leventyalcin)
+- [sheran-g](https://github.com/sheran-g)
 
 # Getting started:
 ```
@@ -82,4 +86,6 @@ now, you can start hacking on it.
 root/toor
 
 # Celery worker:
-```celery -A openduty worker -l info```
+```
+celery -A openduty worker -l info
+```
