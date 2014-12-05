@@ -8,7 +8,7 @@ class TwilioSmsNotifier:
         self.__config = config
 
     def notify(self, notification):
-        max_length = 140
+        max_length = 160
         message = (notification.message[:max_length-2] + '..') if len(notification.message) > max_length else notification.message
         client = TwilioRestClient(self.__config['SID'], self.__config['token'])
         try:
