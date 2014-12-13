@@ -64,7 +64,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
                 event_log_message = "%s api key created %s with status %s" % (serviceToken.name, incident.incident_key, request.DATA['event_type'])
 
-            if incident.event_type != Incident.ACKNOWLEDGE or (incident.event_type == Incident.ACKNOWLEDGE and request.DATA["event_type"] == Incident.RESOLVE ):
+            if incident.event_type != Incident.ACKNOWLEDGE or (incident.event_type == Incident.ACKNOWLEDGE and request.DATA["event_type"] == Incident.RESOLVE):
                 event_log = EventLog()
                 event_log.service_key = incident.service_key
                 event_log.data = event_log_message
