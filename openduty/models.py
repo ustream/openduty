@@ -179,6 +179,9 @@ class UserProfile(models.Model):
     pushover_user_key = models.CharField(max_length=50)
     pushover_app_key = models.CharField(max_length=50)
     slack_room_name = models.CharField(max_length=50)
+    prowl_api_key = models.CharField(max_length=50, blank=True)
+    prowl_application = models.CharField(max_length=256, blank=True)
+    prowl_url= models.CharField(max_length=512, blank=True)
 
 
 def create_user_profile(sender, instance, created, **kwargs):

@@ -80,6 +80,9 @@ def save(request):
         profile.pushover_user_key = request.POST['pushover_user_key']
         profile.pushover_app_key = request.POST['pushover_app_key']
         profile.slack_room_name = request.POST['slack_room_name']
+        profile.prowl_api_key = request.POST['prowl_api_key']
+        profile.prowl_application = request.POST['prowl_application']
+        profile.prowl_url = request.POST['prowl_url']
         profile.save()
 
         return HttpResponseRedirect(reverse('openduty.users.list'))
