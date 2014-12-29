@@ -69,11 +69,13 @@ def save(request):
             method.user = user
             method.position = idx +1
             method.save()
-        try:
-            profile = user.get_profile()
-        except UserProfile.DoesNotExist:
+
+        if user.profile is None:
             profile = UserProfile()
             profile.user = user
+        else:
+            profile = user.profile
+
         profile.phone_number = request.POST['phone_number']
         profile.pushover_user_key = request.POST['pushover_user_key']
         profile.pushover_app_key = request.POST['pushover_app_key']
