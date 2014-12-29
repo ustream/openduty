@@ -16,6 +16,7 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Password">
               </div>
+              <input type="hidden" name="redirect_to" id="redirect_to" value="{{ redirect_to }}">
               <button type="submit" class="btn btn-default">Login</button>
               {% csrf_token %}
             </form>
