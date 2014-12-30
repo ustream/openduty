@@ -8,6 +8,9 @@ from django.core.management import call_command
 from django.db import models
 
 class Migration(DataMigration):
+    depends_on = (
+        ("openduty", "0005_auto__add_field_userprofile_prowl_api_key__add_field_userprofile_prowl"),
+    )
 
     def forwards(self, orm):
         "Write your forwards methods here."
@@ -24,9 +27,6 @@ class Migration(DataMigration):
             assert auth_models.User.objects.create_superuser('root', 'admin@localhost', 'toor')
         else:
             print 'Test user already exists.'
-
-        ##Loading user profile
-        #call_command("loaddata", "openduty_userprofile")
 
     def backwards(self, orm):
         "Write your backwards methods here."
