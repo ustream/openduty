@@ -27,6 +27,10 @@ SLACK_SETTINGS = {
     'apikey': "YOUR_SLACK_API_KEY"
 }
 
+PROWL_SETTINGS = {
+    'priority': 0
+    'application': 'openduty'
+}
 
 DATABASES = {
     'default': {

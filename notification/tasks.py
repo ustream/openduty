@@ -7,6 +7,8 @@ from notification.notifier.email import EmailNotifier
 from notification.notifier.twilio_sms import TwilioSmsNotifier
 from notification.notifier.twilio_call import TwilioCallNotifier
 from notification.notifier.slack import SlackNotifier
+from notification.notifier.prowl import ProwlNotifier
+
 from notification.models import ScheduledNotification, UserNotificationMethod
 from django.conf import settings
 
@@ -26,6 +28,8 @@ def send_notifications(notification_id):
             notifier = SlackNotifier(settings.SLACK_SETTINGS)
         elif notification.notifier == UserNotificationMethod.METHOD_PUSHOVER:
             notifier = PushoverNotifier()
+        elif notification.notifier == UserNotificationMethod.METHOD_PROWL:
+            notifier = ProwlNotifier(settings.PROWL_SETTINGS)
         notifier.notify(notification)
         notification.delete()
     except ScheduledNotification.DoesNotExist:

@@ -112,6 +112,9 @@ TWILIO_SETTINGS = {
 SLACK_SETTINGS = {
 }
 
+PROWL_SETTINGS = {
+}
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
