@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.utils import timezone
 from django.utils.datastructures import MultiValueDictKeyError
 from notification.models import ScheduledNotification
 from escalation_helper import services_where_user_is_on_call
@@ -68,13 +69,13 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 event_log = EventLog()
                 event_log.service_key = incident.service_key
                 event_log.data = event_log_message
-                event_log.occurred_at = datetime.now()
+                event_log.occurred_at = timezone.now()
                 event_log.save()
 
                 incident.event_type = request.DATA["event_type"]
                 incident.description = request.DATA["description"][:100]
-                incident.details =request.DATA["details"]
-                incident.occurred_at = datetime.now()
+                incident.details = request.DATA["details"]
+                incident.occurred_at = timezone.now()
                 try:
                     incident.full_clean()
                 except ValidationError as e:
@@ -155,11 +156,11 @@ def update_type(request):
             logmessage = EventLog()
             logmessage.service_key = incident.service_key
             logmessage.data = "%s changed %s from %s to %s" % (request.user.username, incident.incident_key, incident.event_type, request.POST['event_type'])
-            logmessage.occurred_at = datetime.now()
+            logmessage.occurred_at = timezone.now()
             logmessage.save()
 
             incident.event_type = request.POST['event_type']
-            incident.occurred_at = datetime.now()
+            incident.occurred_at = timezone.now()
             incident.save()
 
             if incident.event_type == "resolve" or incident.event_type == Incident.ACKNOWLEDGE:
@@ -185,7 +186,7 @@ def forward_incident(request):
             event_log = EventLog()
             event_log.service_key = incident.service_key
             event_log.data = event_log_message
-            event_log.occurred_at = datetime.now()
+            event_log.occurred_at = timezone.now()
             event_log.save()
 
     except Incident.DoesNotExist:
