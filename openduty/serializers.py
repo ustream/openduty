@@ -16,6 +16,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ('name',)
 
+
 class IncidentSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -30,9 +31,15 @@ class SchedulePolicySerializer(serializers.HyperlinkedModelSerializer):
         model = SchedulePolicy
         fields = ('name', 'repeat_times', 'rules')
 
+
 class SchedulePolicyRuleSerializer(serializers.HyperlinkedModelSerializer):
     rules = serializers.RelatedField(many=True)
 
     class Meta:
         model = SchedulePolicyRule
         fields = ('schedule_policy', 'position', 'user_id', 'schedule', 'escalate_after')
+
+
+class NoneSerializer(serializers.Serializer):
+    class Meta:
+        fields = ()

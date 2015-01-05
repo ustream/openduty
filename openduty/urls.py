@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import patterns, url, include
 from rest_framework import routers as rest_routers
 from openduty import views
-from . import incidents
+from . import incidents, healthcheck
 from django.contrib import admin
 from schedule.periods import  Month, Week
 
@@ -13,6 +13,7 @@ rest_router.register(r'groups', views.GroupViewSet)
 rest_router.register(r'schedule_policies', views.SchedulePolicyViewSet)
 rest_router.register(r'schedule_policy_rules', views.SchedulePolicyRuleViewSet)
 rest_router.register(r'create_event', incidents.IncidentViewSet)
+rest_router.register(r'healthcheck', healthcheck.HealthCheckViewSet)
 
 
 # Wire up our API using automatic URL routing.
