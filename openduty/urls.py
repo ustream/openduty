@@ -14,6 +14,8 @@ rest_router.register(r'schedule_policies', views.SchedulePolicyViewSet)
 rest_router.register(r'schedule_policy_rules', views.SchedulePolicyRuleViewSet)
 rest_router.register(r'create_event', incidents.IncidentViewSet)
 rest_router.register(r'healthcheck', healthcheck.HealthCheckViewSet)
+rest_router.register(r'celeryhealthcheck', healthcheck.CeleryHealthCheckViewSet)
+
 
 
 # Wire up our API using automatic URL routing.
