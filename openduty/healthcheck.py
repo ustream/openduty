@@ -1,6 +1,6 @@
 __author__ = 'deathowl'
 
-from time import sleep
+from time import sleep, time
 import datetime
 from openduty.serializers import NoneSerializer
 from openduty.models import Incident
@@ -29,13 +29,13 @@ class CeleryHealthCheckViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         try:
-            random1 = randint(1, 100)
-            random2 = randint(101, 200)
-            result = add.apply_async(args=[random1, random2],
+            timestamp = int(time())
+            random = randint(0, 100000)
+            result = add.apply_async(args=[timestamp, random],
                                      expires=datetime.datetime.now() + datetime.timedelta(seconds=3), connect_timeout=3)
             now = datetime.datetime.now()
             while (now + datetime.timedelta(seconds=5)) > datetime.datetime.now():
-                if result.result == random1 + random2:
+                if result.result == timestamp + random:
                     return Response("OK", status=status.HTTP_200_OK)
                 sleep(0.5)
         except IOError:
