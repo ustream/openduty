@@ -114,7 +114,15 @@ def acknowledged(request, service_key = None):
 @login_required()
 def unhandled_for_on_call_user(request, service_key = None):
     services_to_list = services_where_user_is_on_call(request.user)
-    return process_list(request, services_to_list , Incident.TRIGGER, 'Current unhandled incidents')
+
+    if service_key is not None:
+        converted_key = uuid.UUID(service_key)
+        if converted_key in services_to_list:
+            services_to_list = [converted_key]
+        else:
+            services_to_list = []
+    return process_list(request, services_to_list , Incident.TRIGGER,
+                        "Current unhandled incidents in services watched by me")
 
 @login_required()
 def process_list(request, service_key_or_key_list , event_type, title):
