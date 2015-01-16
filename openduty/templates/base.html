@@ -34,16 +34,16 @@
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">Incidents <b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu">
                             <li role="presentation">
-                                <a href="{% url 'openduty.incidents.unhandled_for_on_call_user' %}">Unhandled</a>
+                                <a href="{% url 'openduty.incidents.unhandled_for_on_call_user' service_key %}">Unhandled (for me)</a>
                             </li>
                             <li role="presentation">
                                 <a href="{% url 'openduty.incidents.unhandled' %}">Unhandled (all services)</a>
                             </li>
                             <li role="presentation">
-                                <a href="{% url 'openduty.incidents.acknowledged' %}">Acknowledged</a>
+                                <a href="{% url 'openduty.incidents.acknowledged' service_key  %}">Acknowledged</a>
                             </li>
                             <li role="presentation">
-                                <a href="{% url 'openduty.incidents.list' %}">All</a>
+                                <a href="{% url 'openduty.incidents.list' service_key %}">All</a>
                             </li>
                         </ul>
                     </li>

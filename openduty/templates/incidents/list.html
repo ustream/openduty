@@ -24,10 +24,10 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="?service=all">All</a></li>
+                <li><a href=".">All</a></li>
                  <li role="presentation" class="divider"></li>
                 {% for item in services %}
-                <li><a href="?service={{item.id}}">{{ item.name }}</a></li>
+                <li><a href="{{ item.id }}">{{ item.name }}</a></li>
                  {% endfor %}
             </ul>
         </div>
@@ -83,4 +83,19 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if incidents.has_previous %}
+            <a href="?page={{ incidents.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ incidents.number }} of {{ incidents.paginator.num_pages }}.
+        </span>
+
+        {% if incidents.has_next %}
+            <a href="?page={{ incidents.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+    </div>
 {% endblock %}
