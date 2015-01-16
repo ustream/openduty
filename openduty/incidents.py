@@ -104,7 +104,7 @@ def list(request, service_key = None):
 
 @login_required()
 def unhandled(request, service_key = None):
-    return process_list(request ,service_key, Incident.TRIGGER ,'All incidents')
+    return process_list(request ,service_key, Incident.TRIGGER ,'Unhandled incidents')
 
 @login_required()
 def acknowledged(request, service_key = None):
