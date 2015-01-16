@@ -1,5 +1,6 @@
 .idea/*
 env/*
+26env/*
 *.pyc
 database.sql
 .DS_Store
