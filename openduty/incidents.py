@@ -21,6 +21,8 @@ from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from notification.helper import NotificationHelper
 import uuid
 import base64
@@ -94,47 +96,55 @@ class IncidentViewSet(viewsets.ModelViewSet):
             response["incident_key"] = incident.incident_key
             return Response(response, status=status.HTTP_201_CREATED, headers=headers)
 
-@login_required()
-def list(request):
-    services = Service.objects.all()
-    try:
-        actualService = Service.objects.get(id = request.GET['service'])
-        incidents = Incident.objects.filter(service_key = actualService).order_by("-occurred_at")
-    except (Service.DoesNotExist, MultiValueDictKeyError):
-        incidents = Incident.objects.all().order_by("-occurred_at")
-        actualService = None
-    return TemplateResponse(request, 'incidents/list.html', {'incidents': incidents, 'title': 'All incidents',
-                             'url': request.get_full_path(), 'services': services, 'actual': actualService})
 
 @login_required()
-def unhandled(request):
-    services = Service.objects.all()
-    try:
-        actualService = Service.objects.get(id = request.GET['service'])
-        incidents = Incident.objects.filter(service_key = actualService, event_type = Incident.TRIGGER).all().order_by("-occurred_at")
-    except (Service.DoesNotExist, MultiValueDictKeyError):
-        incidents = Incident.objects.filter(event_type = Incident.TRIGGER).all().order_by("-occurred_at")
-    return TemplateResponse(request, 'incidents/list.html', {'incidents': incidents, 'title': 'Current unhandled incidents', 'url': request.get_full_path(), 'services': services})
+def list(request, service_key = None):
+
+    return process_list(request ,service_key, None ,'All incidents')
 
 @login_required()
-def unhandled_for_on_call_user(request):
-    services = Service.objects.all()
+def unhandled(request, service_key = None):
+    return process_list(request ,service_key, Incident.TRIGGER ,'All incidents')
 
+@login_required()
+def acknowledged(request, service_key = None):
+    return process_list(request, service_key, Incident.ACKNOWLEDGE ,'Current acknowledged incidents' )
+
+@login_required()
+def unhandled_for_on_call_user(request, service_key = None):
     services_to_list = services_where_user_is_on_call(request.user)
-
-    incidents = Incident.objects.filter(service_key__in = services_to_list, event_type = Incident.TRIGGER).all().order_by("-occurred_at")
-
-    return TemplateResponse(request, 'incidents/list.html', {'incidents': incidents, 'title': 'Current unhandled incidents', 'url': request.get_full_path(), 'services': services})
+    return process_list(request, services_to_list , None, 'Current unhandled incidents')
 
 @login_required()
-def acknowledged(request):
+
+def process_list(request, service_key_or_key_list , event_type, title):
+
     services = Service.objects.all()
+
+    if service_key_or_key_list == "":
+        incidents = Incident.objects.all()
+    elif isinstance(service_key_or_key_list, basestring):
+        incidents = Incident.objects.filter(service_key = service_key_or_key_list)
+    else:
+        incidents = Incident.objects.filter(service_key__in = service_key_or_key_list)
+
+    if event_type is not None:
+        incidents = incidents.filter(event_type = event_type).order_by("-occurred_at")
+
+    page = request.GET.get('page')
+
+    paginator = Paginator(incidents, settings.PAGINATION_DEFAULT_PAGINATION)
+
     try:
-        actualService = Service.objects.get(id = request.GET['service'])
-        incidents = Incident.objects.filter(service_key = actualService, event_type = Incident.ACKNOWLEDGE).all().order_by("-occurred_at")
-    except (Service.DoesNotExist, MultiValueDictKeyError):
-        incidents = Incident.objects.filter(event_type = Incident.ACKNOWLEDGE).all().order_by("-occurred_at")
-    return TemplateResponse(request, 'incidents/list.html', {'incidents': incidents, 'title': 'Current acknowledged incidents', 'url': request.get_full_path(), 'services': services})
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        incidents = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        incidents = paginator.page(paginator.num_pages)
+
+    return TemplateResponse(request, 'incidents/list.html', {'incidents': incidents, 'title': title, 'url': request.get_full_path(), 'services': services })
 
 @login_required()
 def details(request, id):

@@ -4,6 +4,7 @@ from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
+from django.conf import settings
 from .models import EventLog, Service
 
 
@@ -13,7 +14,7 @@ def list(request):
     services = Service.objects.filter()
     events = EventLog.objects.all().order_by('-occurred_at')
     page = request.GET.get('page')
-    p = Paginator(events, 20)
+    p = Paginator(events, settings.PAGINATION_DEFAULT_PAGINATION)
     try:
         paginated = p.page(page)
     except PageNotAnInteger:
@@ -35,7 +36,7 @@ def get(request, id):
     except Service.DoesNotExist:
         messages.error(request, "No such service!")
 
-    p = Paginator(events, 20)
+    p = Paginator(events, settings.PAGINATION_DEFAULT_PAGINATION)
     try:
         paginated = p.page(page)
     except PageNotAnInteger:

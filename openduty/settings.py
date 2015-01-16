@@ -89,6 +89,8 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
+PAGINATION_DEFAULT_PAGINATION = 20 # The default amount of items to show on a page if no number is specified.
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 

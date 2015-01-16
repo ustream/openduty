@@ -20,3 +20,5 @@ BASE_URL = "http://localhost:8000"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'devsecret'
+
+PAGINATION_DEFAULT_PAGINATION = 3

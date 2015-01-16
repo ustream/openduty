@@ -10,6 +10,7 @@
 {% for cal in schedules %}
 <li><b>{{ cal }}</b> :
   <a href="{% url "openduty.schedules.details" cal.id %}">View Calendar</a>
+</li>
 {% endfor %}
 </ul>
 {% endblock %}
