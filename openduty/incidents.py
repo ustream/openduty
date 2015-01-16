@@ -105,11 +105,11 @@ def list(request, service_key = None):
 
 @login_required()
 def unhandled(request, service_key = None):
-    return process_list(request ,service_key, Incident.TRIGGER ,'Unhandled incidents')
+    return process_list(request, service_key, Incident.TRIGGER, 'Unhandled incidents')
 
 @login_required()
 def acknowledged(request, service_key = None):
-    return process_list(request, service_key, Incident.ACKNOWLEDGE ,'Current acknowledged incidents' )
+    return process_list(request, service_key, Incident.ACKNOWLEDGE, 'Current acknowledged incidents' )
 
 @login_required()
 def unhandled_for_on_call_user(request, service_key = None):
@@ -117,12 +117,10 @@ def unhandled_for_on_call_user(request, service_key = None):
     return process_list(request, services_to_list , None, 'Current unhandled incidents')
 
 @login_required()
-
 def process_list(request, service_key_or_key_list , event_type, title):
 
     services = Service.objects.all()
-
-    if service_key_or_key_list == "":
+    if service_key_or_key_list is None:
         incidents = Incident.objects.all()
     elif isinstance(service_key_or_key_list, basestring):
         incidents = Incident.objects.filter(service_key = service_key_or_key_list)
