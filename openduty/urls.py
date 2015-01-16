@@ -81,7 +81,7 @@ urlpatterns = patterns('',
     url(r'^incidents/details/(.*)$', 'openduty.incidents.details'),
     url(r'^incidents/update_type$', 'openduty.incidents.update_type'),
     url(r'^incidents/forward_incident', 'openduty.incidents.forward_incident'),
-    url(r'^incidents/service/(?P<service_id>.*)?$', 'openduty.incidents.list')
+    url(r'^incidents/service/(.*)?$', 'openduty.incidents.list')
 )
 urlpatterns += patterns('',
         (r'^static/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}),
