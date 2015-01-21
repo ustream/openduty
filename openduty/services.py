@@ -62,6 +62,7 @@ def save(request):
     service.name = request.POST['name']
     service.escalate_after = request.POST['escalate_after']
     service.retry = request.POST['retry']
+    service.notifications_disabled = request.POST.get("disable_notification", "off") == "on"
     if(request.POST['policy']):
         pol = SchedulePolicy.objects.get(id = request.POST['policy'])
     else:

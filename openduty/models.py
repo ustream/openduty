@@ -72,6 +72,7 @@ class Service(models.Model):
     retry = models.IntegerField(blank=True, null=True)
     policy = models.ForeignKey(SchedulePolicy, blank=True, null=True)
     escalate_after = models.IntegerField(blank=True, null=True)
+    notifications_disabled = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('service')

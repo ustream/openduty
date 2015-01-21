@@ -101,3 +101,18 @@ class TestGetEscalation(BaseTestCase):
         event.save()
         events = get_escalation_for_service(self.service)
         self.assertEqual(2, len(events))
+
+    def test_get_escalation_returns_empty_for_muted_services(self):
+        event = Event(
+            start = timezone.now() - timedelta(days=1),
+            end = timezone.now() + timedelta(days=1),
+            title = '{username},{username}'.format(username=self.username),
+            calendar = self.cal,
+        )
+        event.save()
+        self.service.notifications_disabled = True
+        try:
+            events = get_escalation_for_service(self.service)
+            self.assertEqual(0, len(events))
+        finally:
+            event.delete()

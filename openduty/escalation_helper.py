@@ -7,6 +7,8 @@ from django.utils import timezone
 
 def get_escalation_for_service(service):
     result = []
+    if service.notifications_disabled:
+        return result
     rules = SchedulePolicyRule.getRulesForService(service)
     now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
     for item in rules:

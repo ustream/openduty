@@ -54,6 +54,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="disable_notifications" class="col-sm-2 control-label">Disable Notifications</label>
+        <div class="col-sm-1">
+            <input type="checkbox" class="form-control alert-danger" name="disable_notification" id="disable_notification" {% if item.notifications_disabled  %} checked {% endif %}>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-default">Save</button>
         </div>

@@ -78,11 +78,11 @@ class Migration(DataMigration):
         },
         u'openduty.incident': {
             'Meta': {'unique_together': "(('service_key', 'incident_key'),)", 'object_name': 'Incident'},
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'details': ('django.db.models.fields.TextField', [], {}),
             'event_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'incident_key': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
+            'incident_key': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'occurred_at': ('django.db.models.fields.DateTimeField', [], {}),
             'service_key': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.Service']"})
         },
@@ -125,6 +125,9 @@ class Migration(DataMigration):
             'Meta': {'object_name': 'UserProfile'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'prowl_api_key': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'prowl_application': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
+            'prowl_url': ('django.db.models.fields.CharField', [], {'max_length': '512', 'blank': 'True'}),
             'pushover_app_key': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'pushover_user_key': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slack_room_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
