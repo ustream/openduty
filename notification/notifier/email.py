@@ -1,3 +1,5 @@
+from openduty.models import Incident
+
 __author__ = 'deathowl'
 
 import smtplib
@@ -13,7 +15,10 @@ class EmailNotifier:
         truncate_length = int(self.__config.get('max_subject_length', 100))
         FROM = self.__config['user']
         TO = [notification.user_to_notify.email]
-        SUBJECT = "Openduty Incident Report - {0}".format(notification.incident.description)
+        try:
+            SUBJECT = "Openduty Incident Report - {0}".format(notification.incident.description)
+        except:
+            SUBJECT = notification.message
         if truncate_length:
             SUBJECT = truncatechars(SUBJECT, truncate_length)
         TEXT =  notification.message
