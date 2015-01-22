@@ -18,8 +18,8 @@ class NotificationHelper(object):
             notification.save()
             send_notifications.apply_async((notification.id,) ,eta=notification.send_at)
     @staticmethod
-    def notify_user_about_incident(incident, user):
-        notifications = NotificationHelper.generate_notifications_for_user(incident, user)
+    def notify_user_about_incident(incident, user, delay=None, preparedmsg = None):
+        notifications = NotificationHelper.generate_notifications_for_user(incident, user, delay, preparedmsg)
 
         for notification in notifications:
             notification.save()
@@ -65,7 +65,7 @@ class NotificationHelper(object):
         return notifications
 
     @staticmethod
-    def generate_notifications_for_user(incident, user):
+    def generate_notifications_for_user(incident, user, delay=None, preparedmsg = None):
 
         now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
         current_time = now
@@ -74,16 +74,21 @@ class NotificationHelper(object):
         method_index = 0
 
         for method in methods:
-            notification_time = incident.service_key.retry * method_index + incident.service_key.escalate_after
+            if delay is None:
+                notification_time = incident.service_key.retry * method_index + incident.service_key.escalate_after
+            else:
+                notification_time = method_index * delay
             notify_at = current_time + timedelta(minutes=notification_time)
             notification = ScheduledNotification()
             notification.incident = incident
             notification.user_to_notify = user
             notification.notifier = method.method
             notification.send_at = notify_at
-            uri = settings.BASE_URL + "/incidents/details/" + str(incident.id)
-            notification.message = "A Service is experiencing a problem: " + incident.incident_key + " " + incident.description + ". Handle at: " + uri
-
+            if preparedmsg is None:
+                uri = settings.BASE_URL + "/incidents/details/" + str(incident.id)
+                notification.message = "A Service is experiencing a problem: " + incident.incident_key + " " + incident.description + ". Handle at: " + uri
+            else:
+                notification.message = preparedmsg
             notifications.append(notification)
             print "Notify %s at %s with method: %s" % (user.username, notify_at, notification.notifier)
             method_index += 1

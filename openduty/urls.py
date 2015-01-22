@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^users/$', 'openduty.users.list'),
     url(r'^users/new$', 'openduty.users.new'),
     url(r'^users/save', 'openduty.users.save'),
+    url(r'^users/testnotification', 'openduty.users.testnotification'),
     url(r'^users/edit/(\d+)$', 'openduty.users.edit'),
     url(r'^users/delete/(\d+)$', 'openduty.users.delete'),
 

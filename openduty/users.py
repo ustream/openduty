@@ -1,3 +1,5 @@
+from notification.helper import NotificationHelper
+
 __author__ = "dzsubek"
 
 from notification.models import UserNotificationMethod
@@ -92,3 +94,10 @@ def save(request):
             return HttpResponseRedirect(reverse('openduty.users.edit', None, [str(request.POST['id'])]))
         else:
             return HttpResponseRedirect(reverse('openduty.users.new'))
+
+@login_required()
+@require_http_methods(["POST"])
+def testnotification(request):
+    user = User.objects.get(id=request.POST['id'])
+    NotificationHelper.notify_user_about_incident(None, user, 1, "This is a notification test message, just ignore it")
+    return HttpResponseRedirect(reverse('openduty.users.list'))
