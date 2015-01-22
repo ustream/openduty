@@ -43,7 +43,7 @@ class ScheduledNotification(models.Model):
     message = models.CharField(max_length=500)
     user_to_notify = models.ForeignKey(User)
     send_at = models.DateTimeField()
-    incident = models.ForeignKey(Incident)
+    incident = models.ForeignKey(Incident, blank=True, null=True, default=None)
 
     class Meta:
         verbose_name = _('scheduled_notifications')
