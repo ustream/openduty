@@ -26,7 +26,8 @@
     <script type="text/javascript" src="{% static "schedule/js/jquery-ui.js" %}"></script>
     <div class="row header">
       <div class="col-xs-12 col-md-8"><h2>On-Call Schedule: {{ calendar.name }}</h2></div>
-      <div class="col-xs-12 col-md-8"><h2>Currently on-call: {{ currently_oncall }}</h2></div>
+      <div class="col-xs-12 col-md-8">Primary on-call engineer: {{ currently_oncall_1 }}</div>
+      <div class="col-xs-12 col-md-8">Fallback on-call engineer: {{ currently_oncall_2 }}</div>
 
       <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.events.create_or_edit_event' calendar.slug %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Event</a></div>
     </div>
