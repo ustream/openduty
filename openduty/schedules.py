@@ -1,4 +1,6 @@
 __author__ = 'deathowl'
+
+from openduty import escalation_helper
 from urllib import quote
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -51,6 +53,11 @@ def details(request, id,  periods=None):
         else:
             date = timezone.now()
         event_list = sched.event_set.all()
+        currently_oncall_users = escalation_helper.get_current_events_users(sched)
+        if len(currently_oncall_users) >= 2:
+            oncall = "%s , %s" % (currently_oncall_users[1].username, currently_oncall_users[1].username)
+        else:
+            oncall = "Nobody"
         period_objects = dict([(period.__name__.lower(), period(event_list, date)) for period in periods])
         return render_to_response('schedule/detail.html',
          {
@@ -58,6 +65,7 @@ def details(request, id,  periods=None):
             'periods': period_objects,
             'calendar': sched,
             'weekday_names': weekday_names,
+            'currently_oncall' : oncall,
             'here':quote(request.get_full_path()),
         },context_instance=RequestContext(request),
                                   )
