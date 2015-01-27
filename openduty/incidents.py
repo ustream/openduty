@@ -179,7 +179,7 @@ def update_type(request):
             incident.occurred_at = timezone.now()
             incident.save()
 
-            if incident.event_type == "resolve" or incident.event_type == Incident.ACKNOWLEDGE:
+            if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
                 ScheduledNotification.remove_all_for_incident(incident)
 
     except Incident.DoesNotExist:
