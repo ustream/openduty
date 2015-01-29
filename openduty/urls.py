@@ -46,6 +46,8 @@ urlpatterns = patterns('',
     url(r'^services/save', 'openduty.services.save'),
     url(r'^services/edit/(.*)$', 'openduty.services.edit'),
     url(r'^services/delete/(.*)$', 'openduty.services.delete'),
+    url(r'^services/silence/(.*)$', 'openduty.services.silence'),
+
     #Policies
     url(r'^policies/$', 'openduty.escalation.list'),
     url(r'^policies/new$', 'openduty.escalation.new'),
@@ -90,6 +92,8 @@ urlpatterns = patterns('',
     url(r'^incidents/forward_incident', 'openduty.incidents.forward_incident'),
     url(r'^incidents/service/$', 'openduty.incidents.list'),
     url(r'^incidents/service/(.*)$', 'openduty.incidents.list'),
+    url(r'^incidents/silence/(.*)$', 'openduty.incidents.silence'),
+
 
 
 )

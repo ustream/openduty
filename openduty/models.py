@@ -184,6 +184,16 @@ class UserProfile(models.Model):
     prowl_application = models.CharField(max_length=256, blank=True)
     prowl_url= models.CharField(max_length=512, blank=True)
 
+class ServiceSilenced(models.Model):
+    service = models.ForeignKey(Service)
+    silenced = models.BooleanField(default=False)
+    silenced_until = models.DateTimeField()
+
+
+class IncidentSilenced(models.Model):
+    incident = models.ForeignKey(Incident)
+    silenced = models.BooleanField(default=False)
+    silenced_until = models.DateTimeField()
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

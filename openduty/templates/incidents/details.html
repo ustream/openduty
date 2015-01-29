@@ -64,6 +64,36 @@
         </div>
     </form>
     <div class="form-horizontal" style ="padding-left: 50px;">
+
+        <div class="form-group">
+                <label class="col-sm-5 control-label">Silence service for</label>
+                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.services.silence' item.service_key.id %}">
+                    <input type="hidden" name="url" value="{{ url }}">
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
+                    </div>
+                    {% csrf_token %}
+                    <input type="submit" value="Silence Service"  class="btn btn-inverse">
+               </form>
+        </div>
+    </div>
+
+ <div class="form-horizontal" style ="padding-left: 50px;">
+
+        <div class="form-group">
+                <label class="col-sm-5 control-label">Silence incident for</label>
+                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.silence' item.id %}">
+                    <input type="hidden" name="url" value="{{ url }}">
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
+                    </div>
+                    {% csrf_token %}
+                    <input type="submit" value="Silence Incident"  class="btn btn-inverse">
+               </form>
+        </div>
+    </div>
+
+    <div class="form-horizontal" style ="padding-left: 50px;">
         <div class="form-group">
             <label class="col-sm-5 control-label">Forward to</label>
             <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.forward_incident' %}">

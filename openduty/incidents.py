@@ -1,16 +1,11 @@
-from datetime import datetime
+__author__ = 'deathowl'
 
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
-from django.utils.datastructures import MultiValueDictKeyError
 from notification.models import ScheduledNotification
 from escalation_helper import services_where_user_is_on_call
-
-
-__author__ = 'deathowl'
-
-from .models import Incident, Service, ServiceTokens, Token, EventLog
+from .models import Incident, Service, ServiceTokens, Token, EventLog, IncidentSilenced, ServiceSilenced
 from rest_framework import viewsets
 from .serializers import IncidentSerializer
 from rest_framework import status
@@ -25,6 +20,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from notification.helper import NotificationHelper
+from openduty.tasks import unsilence_incident
 import uuid
 import base64
 
@@ -48,7 +44,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
         with transaction.atomic():
             try:
-                incident = Incident.objects.get(incident_key =  request.DATA["incident_key"], service_key = service)
+                incident = Incident.objects.get(incident_key=request.DATA["incident_key"], service_key=service)
 
                 event_log_message = "%s api key changed %s from %s to %s" % (serviceToken.name, incident.incident_key, incident.event_type, request.DATA['event_type'])
             except (Incident.DoesNotExist, KeyError):
@@ -83,8 +79,8 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 except ValidationError as e:
                     return Response({'errors': e.messages}, status=status.HTTP_400_BAD_REQUEST)
                 incident.save()
-
-                if incident.event_type == Incident.TRIGGER:
+                servicesilenced = ServiceSilenced.objects.filter(service=service).count() > 1
+                if incident.event_type == Incident.TRIGGER and not servicesilenced:
                     NotificationHelper.notify_incident(incident)
                 if incident.event_type == "resolve" or incident.event_type == Incident.ACKNOWLEDGE:
                     ScheduledNotification.remove_all_for_incident(incident)
@@ -214,3 +210,32 @@ def forward_incident(request):
     except ValidationError as e:
         messages.error(request, e.messages)
     return HttpResponseRedirect(request.POST['url'])
+
+
+@login_required()
+@require_http_methods(["POST"])
+def silence(request, incident_id):
+    try:
+        incident = Incident.objects.get(id = incident_id)
+        silence_for = request.POST.get('silence_for')
+        url = request.POST.get("url")
+        if IncidentSilenced.objects.filter(incident=incident).count() < 1:
+            silenced_incident = IncidentSilenced()
+            silenced_incident.incident = incident
+            silenced_incident.silenced_until = timezone.now() + timezone.timedelta(hours=int(silence_for))
+            silenced_incident.silenced = True
+            silenced_incident.save()
+            event_log_message = "%s silenced the of incident %s for %s hours" % (request.user.username, incident.incident_key, silence_for)
+            event_log = EventLog()
+            event_log.service_key = incident.service_key
+            event_log.data = event_log_message
+            event_log.occurred_at = timezone.now()
+            event_log.save()
+            ScheduledNotification.remove_all_for_incident(incident)
+            incident.event_type = Incident.ACKNOWLEDGE
+            incident.save()
+            unsilence_incident.apply_async((incident_id,), eta=silenced_incident.silenced_until)
+        return HttpResponseRedirect(url)
+    except Service.DoesNotExist:
+        raise Http404
+

@@ -1,14 +1,18 @@
+from django.utils import timezone
+
 __author__ = 'deathowl'
 
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
-from .models import Service, ServiceTokens, SchedulePolicy, Token, User
+from .models import Service, ServiceTokens, SchedulePolicy, Token, User, ServiceSilenced, Incident
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from openduty.tasks import unsilence_incident
+
 
 
 @login_required()
@@ -99,5 +103,23 @@ def token_create(request, service_id):
         service_token = ServiceTokens.objects.create(service_id = service, token_id = token, name=request.POST['key_name'])
         service_token.save()
         return HttpResponseRedirect(reverse('openduty.services.edit', None, [str(service_id)]));
+    except Service.DoesNotExist:
+        raise Http404
+
+@login_required()
+@require_http_methods(["POST"])
+def silence(request, service_id):
+    try:
+        service = Service.objects.get(id = service_id)
+        silence_for = request.POST.get('silence_for')
+        url = request.POST.get("url")
+        if ServiceSilenced.objects.filter(service=service).count() < 1:
+            silenced_service = ServiceSilenced()
+            silenced_service.service = service
+            silenced_service.silenced_until = timezone.now() + timezone.timedelta(hours=int(silence_for))
+            silenced_service.silenced = True
+            silenced_service.save()
+            unsilence_service.apply_async((service_id,), eta=silenced_service.silenced_until)
+        return HttpResponseRedirect(url)
     except Service.DoesNotExist:
         raise Http404
