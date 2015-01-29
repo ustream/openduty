@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import djcelery
+import ldap
+from django_auth_ldap.config import LDAPSearch, PosixGroupType
 djcelery.setup_loader()
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -48,6 +50,7 @@ INSTALLED_APPS = (
     'djcelery',
     'south',
     'notification',
+    'django_ldap_basic_auth',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -115,6 +118,12 @@ SLACK_SETTINGS = {
 }
 
 PROWL_SETTINGS = {
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
 }
 
 # Database

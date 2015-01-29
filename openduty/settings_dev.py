@@ -22,3 +22,37 @@ BASE_URL = "http://localhost:8000"
 SECRET_KEY = 'devsecret'
 
 PAGINATION_DEFAULT_PAGINATION = 3
+
+
+
+#LDAP RELATED
+AUTH_LDAP_SERVER_URI = "ldap://fqdn:389"
+AUTH_LDAP_BIND_DN = ""
+AUTH_LDAP_BIND_PASSWORD = ""
+AUTH_LDAP_START_TLS = False
+AUTH_LDAP_MIRROR_GROUPS = True #Mirror LDAP Groups as Django Groups, and populate them as well.
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=Group,dc=domain,dc=com",
+    ldap.SCOPE_SUBTREE, "(&(objectClass=posixGroup)(cn=openduty*))"
+)
+AUTH_LDAP_GROUP_TYPE = PosixGroupType()
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People,dc=domain,dc=com",
+ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+
+AUTH_LDAP_USER_ATTR_MAP = {
+"first_name": "uid",
+"last_name": "sn",
+"email": "mail"
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django_ldap_basic_auth.backends.LdapBasicAuthBackend',
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+'django_ldap_basic_auth.middleware.InjectBasicAuthMiddleware',
+)
+
+DJANGO_LDAP_BASIC_AUTH_ACTIVATED = True

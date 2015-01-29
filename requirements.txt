@@ -15,3 +15,5 @@ sleekxmpp
 dj-database-url
 slacker
 south
+django-auth-ldap
+django-ldap-basic-auth
