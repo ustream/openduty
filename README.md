@@ -97,7 +97,7 @@ celery -A openduty worker -l info
 
 # Login using basic authentication with LDAP-backend
 
-Add the following snippet to your settings_prod/dev.py
+Add the following snippet to your settings_prod/dev.py, dont forget about import
 
 ```
 AUTH_LDAP_SERVER_URI = "ldap://fqdn:389"
