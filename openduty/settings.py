@@ -49,8 +49,7 @@ INSTALLED_APPS = (
     'schedule',
     'djcelery',
     'south',
-    'notification',
-    'django_ldap_basic_auth',
+    'notification'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

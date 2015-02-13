@@ -54,4 +54,3 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
     'openduty.middleware.basicauthmiddleware',
 )
 
-DJANGO_LDAP_BASIC_AUTH_ACTIVATED = True
