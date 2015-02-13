@@ -119,14 +119,14 @@ AUTH_LDAP_USER_ATTR_MAP = {
 "email": "mail"
 }
 
+
 AUTHENTICATION_BACKENDS = (
-    'django_ldap_basic_auth.backends.LdapBasicAuthBackend',
     'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
-'django_ldap_basic_auth.middleware.InjectBasicAuthMiddleware',
+    'openduty.middleware.basicauthmiddleware',
 )
 
 DJANGO_LDAP_BASIC_AUTH_ACTIVATED = True
