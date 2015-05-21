@@ -2,6 +2,7 @@ __author__ = 'deathowl'
 
 from twilio.rest import TwilioRestClient
 import twilio
+import sys
 
 class TwilioSmsNotifier:
 
