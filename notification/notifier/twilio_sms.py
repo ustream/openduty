@@ -1,6 +1,8 @@
 __author__ = 'deathowl'
 
 from twilio.rest import TwilioRestClient
+import twilio
+import sys
 
 class TwilioSmsNotifier:
 
@@ -16,5 +18,8 @@ class TwilioSmsNotifier:
                 to=notification.user_to_notify.profile.phone_number,
                 from_=self.__config['sms_number'])
             print 'successfully sent the sms'
+        except twilio.TwilioRestException as e:
+            print 'failed to send sms, Error: %s' % e
         except :
-            print 'failed to send sms'
+            e = sys.exc_info()[0]
+            print 'failed to send sms, Error: %s' % e
