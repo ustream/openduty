@@ -5,6 +5,10 @@ from openduty import views
 from . import incidents, healthcheck
 from django.contrib import admin
 from schedule.periods import  Month, Week
+from .models import Incident
+from .tables import IncidentTable
+from django_tables2_simplefilter import FilteredSingleTableView
+from .incidents import ServicesByMe
 
 admin.autodiscover()
 rest_router = rest_routers.SimpleRouter(trailing_slash=False)
@@ -44,7 +48,7 @@ urlpatterns = patterns('',
     url(r'^services/$', 'openduty.services.list'),
     url(r'^services/new$', 'openduty.services.new'),
     url(r'^services/save', 'openduty.services.save'),
-    url(r'^services/edit/(.*)$', 'openduty.services.edit'),
+    url(r'^services/edit/(.*)$', 'openduty.services.edit', name="service_detail"),
     url(r'^services/delete/(.*)$', 'openduty.services.delete'),
     url(r'^services/silence/(.*)$', 'openduty.services.silence'),
 
@@ -60,9 +64,10 @@ urlpatterns = patterns('',
     url(r'^schedules/$', 'openduty.schedules.list'),
     url(r'^schedules/new$', 'openduty.schedules.new'),
     url(r'^schedules/save', 'openduty.schedules.save'),
-    url(r'^schedules/edit/(\d)$', 'openduty.schedules.edit'),
-    url(r'^schedules/delete/(\d)$', 'openduty.schedules.delete'),
-    url(r'^schedules/view/(.*)$', 'openduty.schedules.details',   kwargs={'periods': [Month]}),
+    url(r'^schedules/edit/(?P<calendar_slug>[-\w]+)/$', 'openduty.schedules.edit'),
+    url(r'^schedules/delete/(?P<calendar_slug>[-\w]+)/$', 'openduty.schedules.delete'),
+    url(r'^schedules/view/(?P<calendar_slug>[-\w]+)/$', 'openduty.schedules.details',
+        name='calendar_details',  kwargs={'periods': [Month]}),
 
     #EVENT
     url(r'^events/create/(?P<calendar_slug>[-\w]+)/$', 'openduty.events.create_or_edit_event', name='calendar_create_event'),
@@ -81,19 +86,17 @@ urlpatterns = patterns('',
     url(r'^dashboard/service/(.*)$', 'openduty.event_log.get'),
 
     #INCIDENTS
-    url(r'^incidents/unhandled/on-call/$', 'openduty.incidents.unhandled_for_on_call_user'),
-    url(r'^incidents/unhandled/on-call/(.*)$', 'openduty.incidents.unhandled_for_on_call_user'),
-    url(r'^incidents/unhandled/$', 'openduty.incidents.unhandled'),
-    url(r'^incidents/unhandled/(.*)$', 'openduty.incidents.unhandled'),
-    url(r'^incidents/acknowledged/$', 'openduty.incidents.acknowledged'),
-    url(r'^incidents/acknowledged/(.*)$', 'openduty.incidents.acknowledged'),
     url(r'^incidents/details/(.*)$', 'openduty.incidents.details'),
-    url(r'^incidents/update_type$', 'openduty.incidents.update_type'),
+    url(r'^incidents/update_type/$', 'openduty.incidents.update_type'),
     url(r'^incidents/forward_incident', 'openduty.incidents.forward_incident'),
-    url(r'^incidents/service/$', 'openduty.incidents.list'),
-    url(r'^incidents/service/(.*)$', 'openduty.incidents.list'),
     url(r'^incidents/silence/(.*)$', 'openduty.incidents.silence'),
-
+    url(r'^incidents/on-call/$', ServicesByMe.as_view(), name="incidents_on_call" ),
+    url(r'^incidents/list/$',
+        FilteredSingleTableView.as_view(template_name='incidents/list2.html',
+                                        table_class=IncidentTable, model=Incident,
+                                        table_pagination={"per_page": 10},
+                                        ),
+        name='incident_list'),
 
 
 )

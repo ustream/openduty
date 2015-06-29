@@ -25,7 +25,7 @@ class IncidentSerializer(serializers.ModelSerializer):
 
 
 class SchedulePolicySerializer(serializers.HyperlinkedModelSerializer):
-    rules = serializers.RelatedField(many=True)
+    rules = serializers.RelatedField(many=True, read_only=True)
 
     class Meta:
         model = SchedulePolicy
@@ -33,7 +33,7 @@ class SchedulePolicySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SchedulePolicyRuleSerializer(serializers.HyperlinkedModelSerializer):
-    rules = serializers.RelatedField(many=True)
+    rules = serializers.RelatedField(many=True, read_only=True)
 
     class Meta:
         model = SchedulePolicyRule

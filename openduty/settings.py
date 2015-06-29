@@ -48,8 +48,10 @@ INSTALLED_APPS = (
     'openduty.templatetags',
     'schedule',
     'djcelery',
-    'south',
-    'notification'
+    'notification',
+    'django_tables2',
+    'django_tables2_simplefilter',
+    'bootstrap3',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -84,6 +86,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+FIRST_DAY_OF_WEEK = 1
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
        'rest_framework.permissions.AllowAny',
@@ -99,6 +103,13 @@ PAGINATION_DEFAULT_PAGINATION = 20 # The default amount of items to show on a pa
 STATIC_URL = '/static/'
 
 STATIC_ROOT =  os.path.realpath(os.path.dirname(__file__))+"/static/"
+STATICFILES_DIRS = (
+    os.path.realpath(os.path.dirname(__file__))+'/static_schedule/',
+)
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+)
 
 AUTH_PROFILE_MODULE = 'openduty.UserProfile'
 
@@ -142,6 +153,7 @@ if 'test' in sys.argv:
             'NAME': 'test_sqlite.db',
         }
     }
+
 
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',

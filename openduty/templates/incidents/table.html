@@ -1,0 +1,54 @@
+{% load querystring from django_tables2 %}
+{% load trans blocktrans from i18n %}
+{% load bootstrap3 %}
+ 
+{% if table.page %}
+    <div class="table-container">
+{% endif %}
+ 
+{% block table %}
+    <table {% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+        {% block table.thead %}
+            <thead>
+            <tr>
+                {% for column in table.columns %}
+                    {% if column.orderable %}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
+                    {% else %}
+                        <th {{ column.attrs.th.as_html }}>{{ column.header }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            </thead>
+        {% endblock table.thead %}
+        {% block table.tbody %}
+            <tbody>
+            {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
+                {% block table.tbody.row %}
+                    <tr class="{% cycle "odd" "even" %} {{ row.tr_class }}">
+                        {% for column, cell in row.items %}
+                            <td {{ column.attrs.td.as_html }} >{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endblock table.tbody.row %}
+            {% empty %}
+                {% if table.empty_text %}
+                    {% block table.tbody.empty_text %}
+                        <tr><td>{{ table.empty_text }}</td></tr>
+                    {% endblock table.tbody.empty_text %}
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        {% endblock table.tbody %}
+        {% block table.tfoot %}
+            <tfoot></tfoot>
+        {% endblock table.tfoot %}
+    </table>
+{% endblock table %}
+ 
+{% if table.page %}
+    {% block pagination %}
+        {% bootstrap_pagination table.page url=request.get_full_path %}
+        {#{ table.page|pagination }#}
+    {% endblock pagination %}
+{% endif %}

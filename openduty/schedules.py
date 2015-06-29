@@ -17,7 +17,8 @@ from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-
+from django.shortcuts import get_object_or_404
+import pytz
 
 @login_required()
 def list(request):
@@ -25,9 +26,9 @@ def list(request):
     return TemplateResponse(request, 'schedule/list.html', {'schedules': schedules})
 
 @login_required()
-def delete(request, id):
+def delete(request, calendar_slug):
     try:
-        sched = Calendar.objects.get(id = id)
+        sched = get_object_or_404(Calendar, slug=calendar_slug)
         sched.delete()
         return HttpResponseRedirect('/schedules/');
     except Calendar.DoesNotExist:
@@ -41,9 +42,9 @@ def new(request):
         raise Http404
 
 @login_required()
-def details(request, id,  periods=None):
+def details(request, calendar_slug,  periods=None):
     try:
-        sched = Calendar.objects.get(id = id)
+        sched = get_object_or_404(Calendar, slug=calendar_slug)
         date = coerce_date_dict(request.GET)
         if date:
             try:
@@ -62,7 +63,17 @@ def details(request, id,  periods=None):
         else:
             oncall1 = "Nobody"
             oncall2 = "Nobody"
-        period_objects = dict([(period.__name__.lower(), period(event_list, date)) for period in periods])
+
+        if 'django_timezone' in request.session:
+            local_timezone = pytz.timezone(request.session['django_timezone'])
+        else:
+            local_timezone = timezone.get_default_timezone()
+        period_objects = {}
+        for period in periods:
+            if period.__name__.lower() == 'year':
+                period_objects[period.__name__.lower()] = period(event_list, date, None, local_timezone)
+            else:
+                period_objects[period.__name__.lower()] = period(event_list, date, None, None, local_timezone)
         return render_to_response('schedule/detail.html',
          {
             'date': date,
@@ -71,6 +82,8 @@ def details(request, id,  periods=None):
             'weekday_names': weekday_names,
             'currently_oncall_1' : oncall1,
             'currently_oncall_2' : oncall2,
+            'local_timezone': local_timezone,
+            'current_date': timezone.now(),
 
             'here':quote(request.get_full_path()),
         },context_instance=RequestContext(request),
@@ -79,17 +92,18 @@ def details(request, id,  periods=None):
         raise Http404
 
 @login_required()
-def edit(request, id):
+def edit(request, calendar_slug):
     try:
-        sched = Calendar.objects.get(id = id)
-        return TemplateResponse(request, 'schedule/edit.html', {'item': sched})
+        sched = get_object_or_404(Calendar, slug=calendar_slug)
+        return TemplateResponse(request, 'schedule/edit.html', {'item': sched, 'edit': True})
     except Calendar.DoesNotExist:
         raise Http404
+
 @login_required()
 @require_http_methods(["POST"])
 def save(request):
     try:
-        sched = Calendar.objects.get(id = request.POST['id'])
+        sched = Calendar.objects.get(slug=request.POST['slug'])
     except Calendar.DoesNotExist:
         sched = Calendar()
 
@@ -100,7 +114,7 @@ def save(request):
         return HttpResponseRedirect('/schedules/');
     except IntegrityError:
         messages.error(request, 'Schedule already exists')
-        if int(request.POST['id']) > 0:
-            return HttpResponseRedirect(reverse('openduty.schedules.edit', None, [str(request.POST['id'])]))
+        if request.POST['slug']:
+            return HttpResponseRedirect(reverse('openduty.schedules.edit', None, [request.POST['slug']]))
         else:
             return HttpResponseRedirect(reverse('openduty.schedules.new'))

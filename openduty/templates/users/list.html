@@ -23,14 +23,20 @@
                     <td class="controls">
                         <form method="post" action="{% url 'openduty.users.testnotification' %}">
 
-                        <a href="{% url 'openduty.users.edit' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+                        <a href="{% url 'openduty.users.edit' item.id %}" class="btn btn-default btn-sm"
+                                data-toggle="tooltip" data-placement="top" title="Edit">
+                            <span class="glyphicon glyphicon-edit"></span></a>
                         {% if item.id != user.id %}
-                        <a href="{% url 'openduty.users.delete' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="{% url 'openduty.users.delete' item.id %}" class="btn btn-default btn-sm"
+                                data-toggle="tooltip" data-placement="top" title="Remove">
+                            <span class="glyphicon glyphicon-remove"></span></a>
                         {% else %}
                             <input type="hidden" name="id" value="{{ item.id }}">
                             <input type="hidden" name="url" value="{{ url }}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-default btn-sm" name="event_type" value="">
+                            <button type="submit" class="btn btn-default btn-sm"
+                                    data-toggle="tooltip" data-placement="top" title="Test notification"
+                                    name="event_type" value="">
                                 <span class="glyphicon glyphicon-bullhorn"></span>
                             </button>
 

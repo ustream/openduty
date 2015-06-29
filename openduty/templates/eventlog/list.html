@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load arrowfilter %}
+
 {% block content %}
     <div class="row header">
         <div class="col-xs-8 col-md-10"><h2>Event log</h2></div>
@@ -32,14 +34,20 @@
         <thead>
             <tr>
                 <th>Time</th>
+                <th>User</th>
                 <th>Service name</th>
                 <th>Event data</th>
             </tr>
         </thead>
         <tbody>
             {% for item in events %}
-                <tr class="">
-                    <td>{{ item.occurred_at|date:"Y-m-d H:i:s" }}</td>
+                <tr class="{{ item.color }}">
+                    <td>
+                        <div data-toggle="tooltip" data-placement="top" title="{{ item.occurred_at }}">
+                        {{ item.occurred_at|arrowfilter }}
+                        </div>
+                    </td>
+                    <td>{{ item.user|default:"system" }}</td>
                     <td>{{ item.service_key.name }}</td>
                     <td>{{ item.data }}</td>
                 </tr>

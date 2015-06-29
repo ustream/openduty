@@ -3,24 +3,16 @@ __author__ = 'deathowl'
 from .models import User, SchedulePolicyRule, Service
 from datetime import datetime, timedelta
 from django.utils import timezone
+from schedule.periods import Day
 
 
 def get_current_events_users(calendar):
     now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
     result = []
-    for event in calendar.events.all():
-        if event.rule:
-            # TODO: This assumes no more than monthly occurance. There
-            # must be a better way to ask an event if x date falls within
-            # an occurence
-            for o in event.get_occurrences(now, now + timedelta(days=32)):
-                if o.start <= now <= o.end:
-                    usernames = event.title.split(',')
-                    for username in usernames:
-                        result.append(User.objects.get(username=username.strip()))
-                    break
-        elif event.start <= now <= event.end:
-            usernames = event.title.split(',')
+    day = Day(calendar.events.all(), now)
+    for o in day.get_occurrences():
+        if o.start <= now <= o.end:
+            usernames = o.event.title.split(',')
             for username in usernames:
                 result.append(User.objects.get(username=username.strip()))
     return result
@@ -40,11 +32,8 @@ def get_escalation_for_service(service):
     return result
 
 def services_where_user_is_on_call(user):
-    result = []
-
-    for service in Service.objects.all():
-        escalation_users = map(lambda user: user.id, get_escalation_for_service(service))
-        if user.id in escalation_users:
-            result.append(service.id)
-
-    return result
+    from django.db.models import Q
+    services = Service.objects.filter(
+        Q(policy__rules__user_id=user) | Q(policy__rules__schedule__event__title__icontains=user)
+    )
+    return services

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block static %}
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/no-more-tables.css" %}" >
+{% endblock %}
+
+{% load wbr %}
+{% load arrowfilter %}
+
+{% block content %}
+<script language="JavaScript">
+function toggle(source) {
+    checkboxes = document.getElementsByName('selection');
+    for(var i in checkboxes)
+        checkboxes[i].checked = source.checked;
+}
+</script>
+
+{% if messages %}
+    <div class="alert alert-danger">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="row header"> 
+    {% include "incidents/incident_filter.html" with filters=filters only %}
+</div>    
+
+
+    <form id="tform" action="/incidents/update_type/" method="post">
+        <input type="hidden" name="url" value="{{ request.get_full_path }}">
+    <button type="submit" id="ack_all" class="bulk-op btn btn-warning" name="event_type" value="acknowledge">Acknowledge</button>
+    <button type="submit" id="res_all" class="bulk-op btn btn-success" name="event_type" value="resolve">Resolve</button>
+
+    {% csrf_token %}
+    </form>
+        {% render_table table %}
+
+
+{% endblock %}
