@@ -45,7 +45,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
             event.creator = request.user
             event.calendar = calendar
         event.save()
-        return HttpResponseRedirect(reverse('openduty.schedules.details', None, [calendar.id]))
+        return HttpResponseRedirect(reverse('calendar_details', kwargs={'calendar_slug': calendar.slug}))
     if instance is not None:
         officers = instance.title.split(",")
         data["oncall"] = officers[0]
@@ -54,6 +54,8 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         data["start_hour"] = instance.start.time().strftime("%H:%M")
         data["end_ymd"] = instance.end.date().isoformat()
         data["end_hour"] = instance.end.time().strftime("%H:%M")
+        if instance.end_recurring_period:
+            data["recurr_ymd"] = instance.end_recurring_period.date().isoformat()
         data["description"] = instance.description
         data["rule"] = instance.rule and instance.rule.id or ""
 
@@ -79,4 +81,4 @@ def destroy_event(request, calendar_slug, event_id=None, next=None,
 
     calendar = get_object_or_404(Calendar, slug=calendar_slug)
 
-    return HttpResponseRedirect(reverse('openduty.schedules.details', None, [str(calendar.id)]))
+    return HttpResponseRedirect(reverse('calendar_details', None, [str(calendar.slug)]))

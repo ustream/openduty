@@ -5,16 +5,18 @@ TEMPLATE_DEBUG = True
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'database.sql',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': ''
+import sys
+if 'test' not in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'openduty',
+            'USER': 'openduty',
+            'PASSWORD': 'dutyfree',
+            'HOST': '127.0.0.1',
+            'PORT': '3306'
+        }
     }
-}
 
 BASE_URL = "http://localhost:8000"
 

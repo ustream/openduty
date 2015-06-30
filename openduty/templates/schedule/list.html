@@ -2,15 +2,36 @@
 {% load scheduletags %}
 
 {% block content %}
- <div class="row header">
-      <div class="col-xs-12 col-md-8"><h2>Schedules</h2></div>
-      <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.schedules.new' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New schedule</a></div>
+    <div class="row header">
+        <div class="col-xs-12 col-md-8"><h2>Schedules</h2></div>
+        <div class="col-xs-6 col-md-4 button">
+            <a href="{% url 'openduty.schedules.new' %}" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> New schedule
+            </a>
+        </div>
     </div>
-<ul>
-{% for cal in schedules %}
-<li><b>{{ cal }}</b> :
-  <a href="{% url "openduty.schedules.details" cal.id %}">View Calendar</a>
-</li>
-{% endfor %}
+<table class="table">
+<ul class="list-group">
+    {% for cal in schedules %}
+    <tr>
+        <td>
+            {{ cal }}
+        </td>
+        <td class="controls">
+            <a href="{% url "calendar_details" cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="See calendar">
+            <span class="glyphicon glyphicon-eye-open"></span>
+            </a>
+            <a href="{% url "openduty.schedules.edit" cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
+            <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a href="{% url 'openduty.events.create_or_edit_event' cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Add event">
+            <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <a href="{% url "openduty.schedules.delete" cal.slug %}" role="button" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
 </ul>
 {% endblock %}

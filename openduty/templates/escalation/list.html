@@ -24,8 +24,12 @@
                 <td>{{ item.repeat_times }}</td>
 
                 <td class="controls">
-                    <a href="{% url 'openduty.escalation.edit' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
-                    <a href="{% url 'openduty.escalation.delete' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a href="{% url 'openduty.escalation.edit' item.id %}" class="btn btn-default btn-sm"
+                            data-toggle="tooltip" data-placement="top" title="Edit">
+                        <span class="glyphicon glyphicon-edit"></span></a>
+                    <a href="{% url 'openduty.escalation.delete' item.id %}" class="btn btn-default btn-sm"
+                            data-toggle="tooltip" data-placement="top" title="Remove">
+                        <span class="glyphicon glyphicon-remove"></span></a>
                 </td>
             </tr>
         {% endfor %}

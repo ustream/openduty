@@ -56,7 +56,7 @@ class TestAPI(BaseTestCase):
             self.assertEqual(Incident.TRIGGER, new_instance.event_type)
             self.assertEqual(self.service, new_instance.service_key)
         finally:
-            new_instance.delete()
+            pass
 
     def test_create_event_fails_with_invalid_key(self):
         try:
@@ -103,8 +103,7 @@ class TestAPI(BaseTestCase):
             incidents = Incident.objects.all()
             self.assertEqual(2, incidents.count())
         finally:
-            for incident in incidents:
-                incident.delete()
+            pass
 
     def test_incident_recovery(self):
         self.inject_incident()

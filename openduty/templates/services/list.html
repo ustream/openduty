@@ -17,6 +17,7 @@
             <tr>
                 <th>Service name</th>
                 <th>Notification Status</th>
+                <th>Incidents</th>
                 <th></th>
             </tr>
         </thead>
@@ -25,13 +26,18 @@
                 <tr {% if item.notifications_disabled %} class="danger" {% endif %} >
                     <td>{{ item.name }}</td>
                     {% if item.notifications_disabled %}
-                        <td> Notofications for this service are disabled</td>
+                        <td> Notifications for this service are disabled</td>
                     {% else %}
                         <td> Notifications for this service are enabled</td>
                     {% endif %}
+                    <td>{{ item.incident_num }}</td>
                     <td class="controls">
-                        <a href="{% url 'openduty.services.edit' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
-                        <a href="{% url 'openduty.services.delete' item.id %}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="{% url 'openduty.services.edit' item.id %}" class="btn btn-default btn-sm"
+                           data-toggle="tooltip" data-placement="top" title="Edit">
+                            <span class="glyphicon glyphicon-edit"></span></a>
+                        <a href="{% url 'openduty.services.delete' item.id %}" class="btn btn-default btn-sm"
+                                data-toggle="tooltip" data-placement="top" title="Delete">
+                            <span class="glyphicon glyphicon-remove"></span></a>
                     </td>
                 </tr>
             {% endfor %}

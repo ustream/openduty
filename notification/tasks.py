@@ -11,6 +11,9 @@ from notification.notifier.prowl import ProwlNotifier
 
 from notification.models import ScheduledNotification, UserNotificationMethod
 from django.conf import settings
+from django.utils import timezone
+
+from openduty.models import EventLog
 
 @app.task(ignore_result=True)
 def send_notifications(notification_id):
@@ -31,7 +34,28 @@ def send_notifications(notification_id):
         elif notification.notifier == UserNotificationMethod.METHOD_PROWL:
             notifier = ProwlNotifier(settings.PROWL_SETTINGS)
         notifier.notify(notification)
+        # Log successful notification
+        logmessage = EventLog()
+        logmessage.service_key = notification.incident.service_key
+        logmessage.incident_key = notification.incident
+        logmessage.user = notification.user_to_notify
+        logmessage.action = 'notified'
+        logmessage.data = "Notification sent to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+        logmessage.occurred_at = timezone.now()
+        logmessage.save()
+
         notification.delete()
     except ScheduledNotification.DoesNotExist:
         pass #Incident was resolved. NOP.
+    except:
+                # Log successful notification
+        logmessage = EventLog()
+        logmessage.service_key = notification.incident.service_key
+        logmessage.incident_key = notification.incident
+        logmessage.user = notification.user_to_notify
+        logmessage.action = 'notification_failed'
+        logmessage.data = "Sending notification failed to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+        logmessage.occurred_at = timezone.now()
+        logmessage.save()
+        raise
 

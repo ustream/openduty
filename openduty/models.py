@@ -12,7 +12,6 @@ from uuidfield import UUIDField
 from django.core.exceptions import ValidationError
 from schedule.models import Calendar
 from django.contrib.auth import models as auth_models
-from django.contrib.auth.management import create_superuser
 from django.db.models import signals
 from django.conf import settings
 
@@ -89,6 +88,32 @@ class EventLog(models.Model):
     """
     Event Log
     """
+    ACTIONS = (('acknowledge', 'acknowledge'),
+               ('resolve', 'resolve'),
+               ('silence_service', 'silence service'),
+               ('silence_incident', 'silence incident'),
+               ('forward', 'forward'),
+               ('log', 'log'),
+               ('notified','notified'),
+               ('notification_failed', 'notification failed'),
+               ('trigger', 'trigger'))
+
+    @property
+    def color(self):
+        colort_dict = {'acknowledge': 'warning',
+                       'resolve': 'success',
+                       'silence_service': 'active',
+                       'silence_incident': 'active',
+                       'forward': 'info',
+                       'trigger': 'trigger',
+                       'notified': 'success',
+                       'notification_failed': 'danger',
+                       'log': ''}
+        return colort_dict[self.action]
+
+    user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users')
+    incident_key = models.ForeignKey('Incident', blank=True)
+    action = models.CharField(choices=ACTIONS, default='log', max_length="100")
     service_key = models.ForeignKey(Service)
     data = models.TextField()
     occurred_at = models.DateTimeField()
@@ -118,6 +143,16 @@ class Incident(models.Model):
     details = models.TextField()
     occurred_at = models.DateTimeField()
 
+    @property
+    def color(self):
+        colort_dict = {'acknowledge': 'warning',
+                       'resolve': 'success',
+                       'silence_service': 'active',
+                       'silence_incident': 'active',
+                       'forward': 'info',
+                       'trigger': 'trigger',
+                       'log': ''}
+        return colort_dict[self.event_type]
 
     class Meta:
         verbose_name = _('incidents')
@@ -202,6 +237,5 @@ def create_user_profile(sender, instance, created, **kwargs):
 signals.post_save.connect(create_user_profile, sender=User)
 
 signals.post_syncdb.disconnect(
-    create_superuser,
     sender=auth_models,
     dispatch_uid='django.contrib.auth.management.create_superuser')

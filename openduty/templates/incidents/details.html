@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load arrowfilter %}
+
 {% block content %}
 <div class="center-block">
     <div class="row header">
@@ -10,7 +12,7 @@
             <label class="col-sm-6 control-label">Service name</label>
 
             <div class="col-sm-6">
-                <p class="form-control-static">{{ item.service_key.name }}</p>
+                <p class="form-control-static"><a href="{% url 'openduty.services.edit' item.service_key.id  %}">{{ item.service_key.name }}</a></p>
             </div>
         </div>
 
@@ -69,6 +71,7 @@
                 <label class="col-sm-5 control-label">Silence service for</label>
                 <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.services.silence' item.service_key.id %}">
                     <input type="hidden" name="url" value="{{ url }}">
+                    <input type="hidden" name="incident_id" value="{{ item.id }}">
                     <div class="col-sm-2">
                         <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
                     </div>
@@ -109,6 +112,29 @@
            </form>
         </div>
     </div>
+    <table class="table table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in history_list %}
+                <tr class="{{ h.color }}">
+                    <td>
+                        <div data-toggle="tooltip" data-placement="top" title="{{ h.occurred_at }}">
+                        {{ h.occurred_at|arrowfilter }}
+                        </div>
+                    </td>
+                    <td>{{ h.user|default:"system" }}</td>
+                    <td>{{ h.action }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 
 </div>
 {% endblock %}

@@ -15,6 +15,7 @@
         $("#id_end_0").datepicker({dateFormat: $.datepicker.ATOM});
         $("#id_start_1").timePicker();
         $("#id_end_1").timePicker();
+        $("#id_end_recurring_period").datepicker({dateFormat: $.datepicker.ATOM});
         var oldTime = $.timePicker("#id_start_1").getTime();
         $("#id_start_1").change(function() {
           if ($("#id_end_1").val()) { // Only update when second input has a value.
@@ -40,55 +41,71 @@
     </script>
 <b>{% trans "Create or change event. All fields are required." %}</b>
 <br/><br/>
- <form action="" method="post">
- {% csrf_token %}
-     <table>
-       <tbody>
-          <tr>
-             <th><label for="id_start_0">start:</label></th>
-             <td><input id="id_start_0" name="start_0" type="text" class="datepicker" value="{% if data.start_ymd %} {{data.start_ymd}}{% endif %}">
-                 <input id="id_start_1" name="start_1" type="text" class="datepicker" value="{% if data.start_hour %} {{data.start_hour}}{% endif %}"></td>
-          </tr>
-          <tr>
-             <th><label for="id_end_0">end:</label></th>
-             <td><input id="id_end_0" name="end_0" type="text" value="{% if data.end_ymd %} {{data.end_ymd}}{% endif %}">
-                 <input id="id_end_1" name="end_1" type="text" value="{% if data.end_hour %} {{data.end_hour}}{% endif %}"><br>
-                 <span class="helptext">The end time must be later than start time.</span></td>
-          </tr>
-          <tr>
-             <th><label for="id_title">On call</label></th>
-          <td>
-               <select name="oncall">
-                {% for user in users %}
-                 <option value="{{user.username}}" {% if data.oncall == user.username %} {{"selected"}}{% endif %}>{{user.username}}</option>
-                 {% endfor %}
-                 </select>
-          </td>
-          </tr>
-             <tr>
-             <th><label for="fallback">Fallback</label></th>
-          <td>
-               <select name="fallback">
-                {% for user in users %}
-                 <option value="{{user.username}}" {% if data.fallback == user.username %} {{"selected"}}{% endif %}>{{user.username}}</option>
-                 {% endfor %}
-                 </select>
-          </td>
-
-          </tr>
-          <tr>
-             <th>Recurring</th>
-             <td>{{ form.rule }}</td>
-          </tr>
-          <tr>
-             <th><label for="id_description">Description:</label></th>
-             <td><textarea cols="40" id="id_description" name="description" rows="10">{% if data.description %} {{data.description}}{% endif %}</textarea></td>
-          </tr>
-       </tbody>
-    </table>
+ <form class="form-horizontal" action="" method="post">
+     {% csrf_token %}
+     <div class="form-group form-inline">
+         <label for="id_start_0" class="col-sm-2 control-label">Start:</label>
+         <div class="col-sm-10">
+            <input id="id_start_0" name="start_0" type="text" class="datepicker form-control" value="{% if data.start_ymd %} {{data.start_ymd}}{% endif %}">
+            <input id="id_start_1" name="start_1" type="text" class="datepicker form-control" value="{% if data.start_hour %} {{data.start_hour}}{% endif %}">
+        </div>
+     </div>
+     <div class="form-group form-inline">
+          <label for="id_end_0" class="col-sm-2 control-label">End:</label>
+          <div class="col-sm-10"> 
+            <input id="id_end_0" class="form-control" name="end_0" type="text" value="{% if data.end_ymd %} {{data.end_ymd}}{% endif %}">
+            <input id="id_end_1" class="form-control" name="end_1" type="text" value="{% if data.end_hour %} {{data.end_hour}}{% endif %}">
+            <span class="helptext">The end time must be later than start time.</span></td>
+          </div>
+    </div>
+    <div class="form-group form-inline">
+        <label for="id_title" class="col-sm-2 control-label">On call</label>
+        <div class="col-sm-10"> 
+            <select name="oncall" class="form-control">
+            {% for user in users %}
+                <option value="{{user.username}}" {% if data.oncall == user.username %} {{"selected"}}{% endif %}>{{user.username}}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group form-inline">
+        <label for="fallback" class="col-sm-2 control-label">Fallback</label>
+        <div class="col-sm-10"> 
+            <select name="fallback" class="form-control">
+            {% for user in users %}
+                <option value="{{user.username}}" {% if data.fallback == user.username %} {{"selected"}}{% endif %}>{{user.username}}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group form-inline">
+        <label for="rule" class="col-sm-2 control-label">Recurring</label>
+        <div class="col-sm-10">
+            <select name="rule" class="form-control">
+            {% for id, name in form.rule.field.choices %}
+                <option value="{{ id }}" {% if data.rule == id %} {{"selected"}}{% endif %}>{{ name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+     <div class="form-group form-inline">
+         <label for="id_start_0" class="col-sm-2 control-label">End recurring</label>
+         <div class="col-sm-10">
+            <input id="id_end_recurring_period" name="end_recurring_period" type="text"
+            class="datepicker form-control" value="{% if data.recurr_ymd %} {{data.recurr_ymd}}{% endif %}">
+        </div>
+     </div>
+    <div class="form-group form-inline">
+        <label for="id_description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" cols="40" id="id_description" name="description" rows="5">
+                {% if data.description %} {{data.description}}{% endif %}
+            </textarea>
+        </div>
+    </div>
   <br/>
-  <input type="submit" value="{% trans "Save" %}">
-  <input type="button" value="{% trans "Cancel" %}" onclick="window.location='/schedules/view/{{ calendar.id }}'"/>
+  <input type="submit" class="btn btn-success" value="{% trans "Save" %}">
+  <input type="button" class="btn btn-danger" value="{% trans "Cancel" %}" onclick="window.location='/schedules/view/{{ calendar.slug }}'"/>
   <input type="hidden" name="next" value="{{next|default:""}}"/>
 </form>
 {% endblock %}

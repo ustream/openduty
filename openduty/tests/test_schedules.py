@@ -21,7 +21,7 @@ class TestSchedulesViews(LoggedInTestCase):
 
     def test_schedule_detail_view_works_with_query_args(self):
         response = self.client.get(
-            reverse('openduty.schedules.details', args=[self.cal.id]),
+            reverse('openduty.schedules.details', args=[self.cal.slug]),
             {'month': '11', 'year': '2014'},
         )
         self.assertEqual(response.status_code, 200)

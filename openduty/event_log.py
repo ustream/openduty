@@ -11,8 +11,9 @@ from .models import EventLog, Service
 
 @login_required()
 def list(request):
+    filtered_actions = ('notified', 'notification_failed')
     services = Service.objects.filter()
-    events = EventLog.objects.all().order_by('-occurred_at')
+    events = EventLog.objects.exclude(action__in=filtered_actions).order_by('-occurred_at')
     page = request.GET.get('page')
     p = Paginator(events, settings.PAGINATION_DEFAULT_PAGINATION)
     try:

@@ -1,0 +1,28 @@
+<div class="container">
+<h2>Filter</h2>
+  <form class="form-horizontal" action="?" method="GET">
+        {% for p in filters.base_params %}
+        <input type="hidden" name="{{ p.0 }}" value="{{ p.1 }}" />
+        {% endfor %}
+        {% for f in filters.filters %}
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="{{ f.verbose_name }}">{{ f.verbose_name }}:</label>
+             <div class="col-sm-5">
+            <select class="form-control" name="{{ f.field }}">
+                <option value="">All</option>
+                {% for obj in f.values_list %}
+                    <option value="{{ obj.1 }}" {% if f.selected == obj.1 %}selected{% endif %}>{{ obj.0 }}</option>
+                {% endfor %}
+             </select>
+             </div>
+        </div>
+        {% endfor %}
+      <div class="form-group">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-3">
+        <input type="submit" class="btn btn-default" value="Filter"></input>
+        <a href="?" class="btn btn-danger">Reset</a>
+          </div>
+      </div>
+  </form>
+</div>
