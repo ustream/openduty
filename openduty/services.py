@@ -39,6 +39,11 @@ def edit(request, id):
             api_keys = ServiceTokens.objects.filter(service_id = service)
         except ServiceTokens.DoesNotExist:
             api_keys = []
+        try:
+            ss_obj = ServiceSilenced.objects.get(service=service)
+            service_silenced = str(ss_obj.silenced_until - timezone.now()).split(".")[0]
+        except ServiceSilenced.DoesNotExist:
+            service_silenced = False
 
         policy = service.policy if service.policy else None
         all_polcies = SchedulePolicy.objects.all()
@@ -46,7 +51,9 @@ def edit(request, id):
             'item': service,
             'policy': policy,
             'policies': all_polcies,
-            'api_keys': api_keys
+            'api_keys': api_keys,
+            'service_silenced': service_silenced,
+            'url': request.get_full_path(),
         })
     except Service.DoesNotExist:
         raise Http404
@@ -116,7 +123,10 @@ def silence(request, service_id):
         silence_for = request.POST.get('silence_for')
         url = request.POST.get("url")
         incident_id = request.POST.get('incident_id')
-        incident = Incident.objects.get(id=incident_id)
+        if incident_id:
+            incident = Incident.objects.get(id=incident_id)
+        else:
+            incident = None
         if ServiceSilenced.objects.filter(service=service).count() < 1:
             silenced_service = ServiceSilenced()
             silenced_service.service = service
@@ -124,7 +134,7 @@ def silence(request, service_id):
             silenced_service.silenced = True
             silenced_service.save()
 
-            event_log_message = "%s silenced the of service %s for %s hours" % (request.user.username, incident.incident_key, silence_for)
+            event_log_message = "%s silenced the service %s for %s hours" % (request.user.username, service.name, silence_for)
             event_log = EventLog()
             event_log.incident_key = incident
             event_log.action = 'silence_service'
@@ -135,6 +145,30 @@ def silence(request, service_id):
             event_log.save()
 
             unsilence_service.apply_async((service_id,), eta=silenced_service.silenced_until)
+        return HttpResponseRedirect(url)
+    except Service.DoesNotExist:
+        raise Http404
+
+@login_required()
+@require_http_methods(["POST"])
+def unsilence(request, service_id):
+    try:
+        service = Service.objects.get(id = service_id)
+        url = request.POST.get("url")
+        try:
+            ServiceSilenced.objects.filter(service=service).delete()
+            event_log_message = "%s removed silence from service %s" % (request.user.username, service.name)
+            event_log = EventLog()
+            event_log.action = 'unsilence_service'
+            event_log.user = request.user
+            event_log.incident_key = None
+            event_log.service_key = service
+            event_log.data = event_log_message
+            event_log.occurred_at = timezone.now()
+            event_log.save()
+        except ServiceSilenced.DoesNotExist:
+            # No need to delete
+            pass
         return HttpResponseRedirect(url)
     except Service.DoesNotExist:
         raise Http404

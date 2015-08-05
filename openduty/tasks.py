@@ -20,5 +20,5 @@ def unsilence_incident(incident_id):
 @app.task(ignore_result=True)
 def unsilence_service(service_id):
     service = Service.objects.get(id=service_id)
-    silenced_service = ServiceSilenced.objects.get(service=service)
+    silenced_service = ServiceSilenced.objects.filter(service=service)
     silenced_service.delete()

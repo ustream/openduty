@@ -2,7 +2,19 @@
 
 {% block content %}
 <div class="row header">
-    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit service{% else%}New service{% endif %}</h2></div>
+    <div class="col-xs-12 col-md-8">
+        <h2>{% if item %}Edit service{% else%}New service{% endif %}</h2>
+        {% if service_silenced %}
+        <h3>
+            <form method="post" action="{% url 'openduty.services.unsilence' item.id %}">
+                <span class="label label-danger">Silenced for {{ service_silenced }}</span>
+                <button type="submit" class="btn btn-danger">Remove silence</button>
+                {% csrf_token %}
+                <input type="hidden" name="url" value="{{ url }}">
+            </form>
+        </h3>
+        {% endif %}
+    </div>
 </div>
 {% if messages %}
 <div class="alert alert-danger">
@@ -24,7 +36,7 @@
     {% endif %}
     <div class="form-group">
         <label for="name" class="col-sm-2 control-label">Service name</label>
-        <div class="col-sm-10">
+        <div class="col-sm-5">
             <input type="text" class="form-control" name="name" id="name" placeholder="Service name" value="{% if item %}{{ item.name }}{% endif %}">
         </div>
     </div>
@@ -73,6 +85,19 @@
     </div>
     {% csrf_token %}
 </form>
+
+    <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.services.silence' item.id %}">
+        <div class="form-group">
+                <label class="col-sm-2 control-label">Silence service for</label>
+                    <input type="hidden" name="url" value="{{ url }}">
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
+                    </div>
+                    {% csrf_token %}
+                    <input type="submit" value="Silence Service"  class="btn btn-inverse">
+        </div>
+    </form>
+
 {% if item %}
 <div class="row header">
     <div class="col-xs-12 col-md-8"><h3>API Keys</h3></div>

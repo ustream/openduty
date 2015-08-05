@@ -79,6 +79,7 @@ class TestAPI(BaseTestCase):
     def inject_incident(self):
         incident = Incident()
         incident.service_key = self.service
+        incident.event_type = Incident.TRIGGER
         incident.incident_key = "testing"
         incident.description = "test"
         incident.details = "test"

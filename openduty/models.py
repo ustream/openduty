@@ -91,7 +91,9 @@ class EventLog(models.Model):
     ACTIONS = (('acknowledge', 'acknowledge'),
                ('resolve', 'resolve'),
                ('silence_service', 'silence service'),
+               ('unsilence_service', 'unsilence service'),
                ('silence_incident', 'silence incident'),
+               ('unsilence_incident', 'unsilence incident'),
                ('forward', 'forward'),
                ('log', 'log'),
                ('notified','notified'),
@@ -103,7 +105,9 @@ class EventLog(models.Model):
         colort_dict = {'acknowledge': 'warning',
                        'resolve': 'success',
                        'silence_service': 'active',
+                       'unsilence_service': 'active',
                        'silence_incident': 'active',
+                       'unsilence_incident': 'active',
                        'forward': 'info',
                        'trigger': 'trigger',
                        'notified': 'success',
@@ -112,7 +116,7 @@ class EventLog(models.Model):
         return colort_dict[self.action]
 
     user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users')
-    incident_key = models.ForeignKey('Incident', blank=True)
+    incident_key = models.ForeignKey('Incident', blank=True, null=True)
     action = models.CharField(choices=ACTIONS, default='log', max_length="100")
     service_key = models.ForeignKey(Service)
     data = models.TextField()
