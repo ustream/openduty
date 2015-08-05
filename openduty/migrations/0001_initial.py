@@ -1,227 +1,167 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
+import uuidfield.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Token'
-        db.create_table(u'openduty_token', (
-            ('key', self.gf('django.db.models.fields.CharField')(max_length=40, primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'openduty', ['Token'])
+    dependencies = [
+        ('schedule', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'SchedulePolicy'
-        db.create_table(u'openduty_schedulepolicy', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=80)),
-            ('repeat_times', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'openduty', ['SchedulePolicy'])
-
-        # Adding model 'Service'
-        db.create_table(u'openduty_service', (
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=80)),
-            ('id', self.gf('uuidfield.fields.UUIDField')(unique=True, max_length=32, primary_key=True)),
-            ('retry', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('policy', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['openduty.SchedulePolicy'], null=True, blank=True)),
-            ('escalate_after', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'openduty', ['Service'])
-
-        # Adding model 'EventLog'
-        db.create_table(u'openduty_eventlog', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('service_key', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['openduty.Service'])),
-            ('data', self.gf('django.db.models.fields.TextField')()),
-            ('occurred_at', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'openduty', ['EventLog'])
-
-        # Adding model 'Incident'
-        db.create_table(u'openduty_incident', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('service_key', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['openduty.Service'])),
-            ('incident_key', self.gf('django.db.models.fields.CharField')(max_length=80)),
-            ('event_type', self.gf('django.db.models.fields.CharField')(max_length=15)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('details', self.gf('django.db.models.fields.TextField')()),
-            ('occurred_at', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'openduty', ['Incident'])
-
-        # Adding unique constraint on 'Incident', fields ['service_key', 'incident_key']
-        db.create_unique(u'openduty_incident', ['service_key_id', 'incident_key'])
-
-        # Adding model 'ServiceTokens'
-        db.create_table(u'openduty_servicetokens', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=80)),
-            ('service_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['openduty.Service'])),
-            ('token_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['openduty.Token'])),
-        ))
-        db.send_create_signal(u'openduty', ['ServiceTokens'])
-
-        # Adding model 'SchedulePolicyRule'
-        db.create_table(u'openduty_schedulepolicyrule', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('schedule_policy', self.gf('django.db.models.fields.related.ForeignKey')(related_name='rules', to=orm['openduty.SchedulePolicy'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')()),
-            ('user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('schedule', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['schedule.Calendar'], null=True, blank=True)),
-            ('escalate_after', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'openduty', ['SchedulePolicyRule'])
-
-        # Adding model 'UserProfile'
-        db.create_table(u'openduty_userprofile', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='profile', unique=True, to=orm['auth.User'])),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('pushover_user_key', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('pushover_app_key', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('slack_room_name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-        ))
-        db.send_create_signal(u'openduty', ['UserProfile'])
-
-
-    def backwards(self, orm):
-        # Removing unique constraint on 'Incident', fields ['service_key', 'incident_key']
-        db.delete_unique(u'openduty_incident', ['service_key_id', 'incident_key'])
-
-        # Deleting model 'Token'
-        db.delete_table(u'openduty_token')
-
-        # Deleting model 'SchedulePolicy'
-        db.delete_table(u'openduty_schedulepolicy')
-
-        # Deleting model 'Service'
-        db.delete_table(u'openduty_service')
-
-        # Deleting model 'EventLog'
-        db.delete_table(u'openduty_eventlog')
-
-        # Deleting model 'Incident'
-        db.delete_table(u'openduty_incident')
-
-        # Deleting model 'ServiceTokens'
-        db.delete_table(u'openduty_servicetokens')
-
-        # Deleting model 'SchedulePolicyRule'
-        db.delete_table(u'openduty_schedulepolicyrule')
-
-        # Deleting model 'UserProfile'
-        db.delete_table(u'openduty_userprofile')
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'openduty.eventlog': {
-            'Meta': {'object_name': 'EventLog'},
-            'data': ('django.db.models.fields.TextField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'occurred_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'service_key': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.Service']"})
-        },
-        u'openduty.incident': {
-            'Meta': {'unique_together': "(('service_key', 'incident_key'),)", 'object_name': 'Incident'},
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'details': ('django.db.models.fields.TextField', [], {}),
-            'event_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'incident_key': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
-            'occurred_at': ('django.db.models.fields.DateTimeField', [], {}),
-            'service_key': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.Service']"})
-        },
-        u'openduty.schedulepolicy': {
-            'Meta': {'object_name': 'SchedulePolicy'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'repeat_times': ('django.db.models.fields.IntegerField', [], {})
-        },
-        u'openduty.schedulepolicyrule': {
-            'Meta': {'object_name': 'SchedulePolicyRule'},
-            'escalate_after': ('django.db.models.fields.IntegerField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {}),
-            'schedule': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['schedule.Calendar']", 'null': 'True', 'blank': 'True'}),
-            'schedule_policy': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'rules'", 'to': u"orm['openduty.SchedulePolicy']"}),
-            'user_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
-        },
-        u'openduty.service': {
-            'Meta': {'object_name': 'Service'},
-            'escalate_after': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('uuidfield.fields.UUIDField', [], {'unique': 'True', 'max_length': '32', 'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'policy': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.SchedulePolicy']", 'null': 'True', 'blank': 'True'}),
-            'retry': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'})
-        },
-        u'openduty.servicetokens': {
-            'Meta': {'object_name': 'ServiceTokens'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
-            'service_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.Service']"}),
-            'token_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['openduty.Token']"})
-        },
-        u'openduty.token': {
-            'Meta': {'object_name': 'Token'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'primary_key': 'True'})
-        },
-        u'openduty.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'pushover_app_key': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'pushover_user_key': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'slack_room_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': u"orm['auth.User']"})
-        },
-        'schedule.calendar': {
-            'Meta': {'object_name': 'Calendar'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '200'})
-        }
-    }
-
-    complete_apps = ['openduty']
+    operations = [
+        migrations.CreateModel(
+            name='EventLog',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('action', models.CharField(default=b'log', max_length=b'100', choices=[(b'acknowledge', b'acknowledge'), (b'resolve', b'resolve'), (b'silence_service', b'silence service'), (b'silence_incident', b'silence incident'), (b'forward', b'forward'), (b'log', b'log'), (b'notified', b'notified'), (b'notification_failed', b'notification failed'), (b'trigger', b'trigger')])),
+                ('data', models.TextField()),
+                ('occurred_at', models.DateTimeField()),
+            ],
+            options={
+                'verbose_name': 'eventlog',
+                'verbose_name_plural': 'eventlog',
+            },
+        ),
+        migrations.CreateModel(
+            name='Incident',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('incident_key', models.CharField(max_length=200)),
+                ('event_type', models.CharField(max_length=15)),
+                ('description', models.CharField(max_length=200)),
+                ('details', models.TextField()),
+                ('occurred_at', models.DateTimeField()),
+            ],
+            options={
+                'verbose_name': 'incidents',
+                'verbose_name_plural': 'incidents',
+            },
+        ),
+        migrations.CreateModel(
+            name='IncidentSilenced',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('silenced', models.BooleanField(default=False)),
+                ('silenced_until', models.DateTimeField()),
+                ('incident', models.ForeignKey(to='openduty.Incident')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='SchedulePolicy',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=80)),
+                ('repeat_times', models.IntegerField()),
+            ],
+            options={
+                'verbose_name': 'schedule_policy',
+                'verbose_name_plural': 'schedule_policies',
+            },
+        ),
+        migrations.CreateModel(
+            name='SchedulePolicyRule',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('position', models.IntegerField()),
+                ('escalate_after', models.IntegerField()),
+                ('schedule', models.ForeignKey(blank=True, to='schedule.Calendar', null=True)),
+                ('schedule_policy', models.ForeignKey(related_name='rules', to='openduty.SchedulePolicy')),
+                ('user_id', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'verbose_name': 'schedule_policy_rule',
+                'verbose_name_plural': 'schedule_policy_rules',
+            },
+        ),
+        migrations.CreateModel(
+            name='Service',
+            fields=[
+                ('name', models.CharField(unique=True, max_length=80)),
+                ('id', uuidfield.fields.UUIDField(primary_key=True, serialize=False, editable=False, max_length=32, blank=True, unique=True)),
+                ('retry', models.IntegerField(null=True, blank=True)),
+                ('escalate_after', models.IntegerField(null=True, blank=True)),
+                ('notifications_disabled', models.BooleanField(default=False)),
+                ('policy', models.ForeignKey(blank=True, to='openduty.SchedulePolicy', null=True)),
+            ],
+            options={
+                'verbose_name': 'service',
+                'verbose_name_plural': 'service',
+            },
+        ),
+        migrations.CreateModel(
+            name='ServiceSilenced',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('silenced', models.BooleanField(default=False)),
+                ('silenced_until', models.DateTimeField()),
+                ('service', models.ForeignKey(to='openduty.Service')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ServiceTokens',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=80)),
+                ('service_id', models.ForeignKey(to='openduty.Service')),
+            ],
+            options={
+                'verbose_name': 'service_tokens',
+                'verbose_name_plural': 'service_tokens',
+            },
+        ),
+        migrations.CreateModel(
+            name='Token',
+            fields=[
+                ('key', models.CharField(max_length=40, serialize=False, primary_key=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('phone_number', models.CharField(max_length=50)),
+                ('pushover_user_key', models.CharField(max_length=50)),
+                ('pushover_app_key', models.CharField(max_length=50)),
+                ('slack_room_name', models.CharField(max_length=50)),
+                ('prowl_api_key', models.CharField(max_length=50, blank=True)),
+                ('prowl_application', models.CharField(max_length=256, blank=True)),
+                ('prowl_url', models.CharField(max_length=512, blank=True)),
+                ('user', models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='servicetokens',
+            name='token_id',
+            field=models.ForeignKey(to='openduty.Token'),
+        ),
+        migrations.AddField(
+            model_name='incident',
+            name='service_key',
+            field=models.ForeignKey(to='openduty.Service'),
+        ),
+        migrations.AddField(
+            model_name='eventlog',
+            name='incident_key',
+            field=models.ForeignKey(to='openduty.Incident', blank=True),
+        ),
+        migrations.AddField(
+            model_name='eventlog',
+            name='service_key',
+            field=models.ForeignKey(to='openduty.Service'),
+        ),
+        migrations.AddField(
+            model_name='eventlog',
+            name='user',
+            field=models.ForeignKey(related_name='users', default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='incident',
+            unique_together=set([('service_key', 'incident_key')]),
+        ),
+    ]
