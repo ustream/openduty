@@ -43,8 +43,9 @@ def send_notifications(notification_id):
         logmessage.data = "Notification sent to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
         logmessage.occurred_at = timezone.now()
         logmessage.save()
-
-        notification.delete()
+        if notification.notifier != UserNotificationMethod.METHOD_TWILIO_CALL:
+            # In case of a twilio call, we need the object for TWiml generation
+            notification.delete()
     except ScheduledNotification.DoesNotExist:
         pass #Incident was resolved. NOP.
     except:

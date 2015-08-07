@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_tables2_simplefilter',
     'bootstrap3',
+    "django_twilio"
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -141,6 +142,9 @@ CACHES = {
 
 DATABASES = {
 }
+
+TWILIO_ACCOUNT_SID = TWILIO_SETTINGS.get("SID", "disabled")
+TWILIO_AUTH_TOKEN = TWILIO_SETTINGS.get("token", "disabled")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ''
