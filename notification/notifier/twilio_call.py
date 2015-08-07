@@ -1,3 +1,5 @@
+from openduty import settings
+
 __author__ = 'deathowl'
 
 from twilio.rest import TwilioRestClient
@@ -11,7 +13,7 @@ class TwilioCallNotifier:
         client = TwilioRestClient(self.__config['SID'], self.__config['token'])
         try:
             client.calls.create(
-                url=self.__config['twiml_url'],
+                url=settings.BASE_URL + "/twilio/%s/%s" % (notification.id, notification.user_to_notify.id),
                 method="GET",
                 to=notification.user_to_notify.profile.phone_number,
                 from_=self.__config['phone_number'])
