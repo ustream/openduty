@@ -12,7 +12,7 @@ from openduty.models import EventLog
 __author__ = 'deathowl'
 
 
-class OpsWeeklyViewSet(viewsets.ReadOnlyModelViewSet):
+class OpsWeeklyIncidentViewSet(viewsets.ReadOnlyModelViewSet):
 
     """
     API endpoint that displays incidents in a format, that opsweekly can digest with ease
@@ -62,3 +62,5 @@ class OpsWeeklyViewSet(viewsets.ReadOnlyModelViewSet):
                      "incindent_key": event.incident_key.incident_key}
             response.append(r_row)
         return Response(self.get_serializer(response, many=True).data)
+
+
