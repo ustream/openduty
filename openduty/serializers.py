@@ -50,3 +50,9 @@ class OpsWeeklySerializer(serializers.Serializer):
     output = serializers.CharField(max_length=2000)
     incindent_key = serializers.CharField(max_length=200)
 
+class OnCallSerializer(serializers.Serializer):
+    person = serializers.CharField()
+    email = serializers.EmailField()
+    start = serializers.DateTimeField()
+    end = serializers.DateTimeField()
+

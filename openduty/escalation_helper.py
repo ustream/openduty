@@ -4,7 +4,7 @@ from .models import User, SchedulePolicyRule, Service
 from datetime import datetime, timedelta
 from django.utils import timezone
 from schedule.periods import Day
-
+from datetime import timedelta
 
 def get_current_events_users(calendar):
     now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
@@ -16,6 +16,25 @@ def get_current_events_users(calendar):
             for username in usernames:
                 result.append(User.objects.get(username=username.strip()))
     return result
+
+def get_events_users_inbetween(calendar, since, until):
+    delta = until - since
+    result = {}
+    for i in range(delta.days + 1):
+        that_day = since + timedelta(days=i)
+        that_day = timezone.make_aware(that_day, timezone.get_current_timezone())
+        day = Day(calendar.events.all(), that_day)
+        for o in day.get_occurrences():
+            if o.start <= that_day <= o.end:
+                usernames = o.event.title.split(',')
+                for username in usernames:
+                    if username not in result.keys():
+                        user_instance = User.objects.get(username=username.strip())
+                        result[username] = {"start": o.start, "person": username.strip(), "end": o.end,
+                                            "email": user_instance.email}
+                    else:
+                        result[username]["end"] = o.end
+    return result.values()
 
 
 def get_escalation_for_service(service):

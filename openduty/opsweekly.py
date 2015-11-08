@@ -8,6 +8,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 import dateutil.parser
 from openduty.models import EventLog
+from schedule.models import Calendar
+from openduty import escalation_helper
+from openduty.serializers import OnCallSerializer
 
 __author__ = 'deathowl'
 
@@ -64,3 +67,31 @@ class OpsWeeklyIncidentViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(self.get_serializer(response, many=True).data)
 
 
+
+class OpsWeeklyOnCallViewSet(viewsets.ReadOnlyModelViewSet):
+
+    """
+    API endpoint that displays incidents in a format, that opsweekly can digest with ease
+    """
+    queryset = Incident.objects.none()
+    serializer_class = OnCallSerializer
+    permission_classes = (AllowAny,)
+
+    def retrieve(self, request, pk=None):
+        try:
+            sched = Calendar.objects.get(slug=pk)
+        except Calendar.DoesNotExist:
+            return Response({}, status.HTTP_404_NOT_FOUND)
+        print sched
+        since = request.GET.get("since")
+        until = request.GET.get("until")
+        if not since or not until:
+            return Response("Bad Request", status=status.HTTP_400_BAD_REQUEST)
+        try:
+            since = dateutil.parser.parse(since)
+            until = dateutil.parser.parse(until)
+        except ValueError:
+            return Response("Bad Request", status=status.HTTP_400_BAD_REQUEST)
+
+        currently_oncall_users = escalation_helper.get_events_users_inbetween(sched, since, until)
+        return Response(self.get_serializer(currently_oncall_users, many=True).data)
