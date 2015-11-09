@@ -50,7 +50,6 @@ class OpsWeeklyIncidentViewSet(viewsets.ReadOnlyModelViewSet):
             filter(occurred_at__gt=since).filter(occurred_at__lt=until).order_by('occurred_at')
         page = self.paginate_queryset(events)
         if page is not None:
-            print page
             response = []
             for event in events:
                 r_row = {"occurred_at": event.occurred_at, "output": event.incident_key.details,
@@ -82,7 +81,6 @@ class OpsWeeklyOnCallViewSet(viewsets.ReadOnlyModelViewSet):
             sched = Calendar.objects.get(slug=pk)
         except Calendar.DoesNotExist:
             return Response({}, status.HTTP_404_NOT_FOUND)
-        print sched
         since = request.GET.get("since")
         until = request.GET.get("until")
         if not since or not until:
