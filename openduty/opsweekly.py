@@ -51,7 +51,7 @@ class OpsWeeklyIncidentViewSet(viewsets.ReadOnlyModelViewSet):
         page = self.paginate_queryset(events)
         if page is not None:
             response = []
-            for event in events:
+            for event in page:
                 r_row = {"occurred_at": event.occurred_at, "output": event.incident_key.details,
                          "incindent_key": event.incident_key.incident_key}
                 response.append(r_row)
