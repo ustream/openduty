@@ -1,3 +1,5 @@
+from openduty.auth import IsAuthenticatedOrCreateOnly
+
 __author__ = 'deathowl'
 
 from django.contrib.auth.models import User
@@ -18,21 +20,14 @@ from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
-from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from notification.helper import NotificationHelper
 from openduty.tasks import unsilence_incident
 import uuid
 import base64
 
 from .tables import IncidentTable
-from django_tables2 import RequestConfig
-from django.shortcuts import render
-from django_tables2_simplefilter import FilteredSingleTableView
-from django_tables2 import SingleTableView
 
-from django.core.urlresolvers import reverse
-from django.template import RequestContext
+from django_tables2_simplefilter import FilteredSingleTableView
 
 class IncidentViewSet(viewsets.ModelViewSet):
 
@@ -41,6 +36,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
     """
     queryset = Incident.objects.all()
     serializer_class = IncidentSerializer
+    permission_classes = (IsAuthenticatedOrCreateOnly,)
 
     def is_relevant(self, incident, new_event_type):
         """

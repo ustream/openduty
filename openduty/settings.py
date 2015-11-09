@@ -91,7 +91,7 @@ FIRST_DAY_OF_WEEK = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-       'rest_framework.permissions.AllowAny',
+       'rest_framework.permissions.IsAuthenticated',
     ),
     'PAGINATE_BY': 10
 }
