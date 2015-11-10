@@ -68,7 +68,11 @@ def new(request):
 def save(request):
     # Update service fields
     try:
-        service = Service.objects.get(id = request.POST['id'])
+        service_id = request.POST.get("id")
+        if service_id != '0':
+            service = Service.objects.get(id=service_id)
+        else:
+            service = Service()
     except Service.DoesNotExist:
         service = Service()
 
