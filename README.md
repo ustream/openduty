@@ -48,7 +48,6 @@ STATICFILES_DIRS = (
 ```
 
 #Contributors at Ustream
-- [deathowl](http://github.com/deathowl)
 - [oker](http://github.com/oker1)
 - [tyrael](http://github.com/tyrael)
 - [dzsubek](https://github.com/dzsubek)
@@ -56,6 +55,9 @@ STATICFILES_DIRS = (
 - [akos](https://github.com/gyim)
 
 ![The team](http://deathowlsnest.com/images/cod.jpg)
+#Main contributors
+- [deathowl](http://github.com/deathowl) 
+
 #Other contributors
 - [DazWorrall](https://github.com/DazWorrall)
 - [leventyalcin](https://github.com/leventyalcin)
