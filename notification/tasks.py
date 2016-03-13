@@ -36,13 +36,14 @@ def send_notifications(notification_id):
         notifier.notify(notification)
         # Log successful notification
         logmessage = EventLog()
-        logmessage.service_key = notification.incident.service_key
-        logmessage.incident_key = notification.incident
-        logmessage.user = notification.user_to_notify
-        logmessage.action = 'notified'
-        logmessage.data = "Notification sent to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
-        logmessage.occurred_at = timezone.now()
-        logmessage.save()
+        if notification.incident:
+            logmessage.service_key = notification.incident.service_key
+            logmessage.incident_key = notification.incident
+            logmessage.user = notification.user_to_notify
+            logmessage.action = 'notified'
+            logmessage.data = "Notification sent to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+            logmessage.occurred_at = timezone.now()
+            logmessage.save()
         if notification.notifier != UserNotificationMethod.METHOD_TWILIO_CALL:
             # In case of a twilio call, we need the object for TWiml generation
             notification.delete()
@@ -51,12 +52,13 @@ def send_notifications(notification_id):
     except:
                 # Log successful notification
         logmessage = EventLog()
-        logmessage.service_key = notification.incident.service_key
-        logmessage.incident_key = notification.incident
-        logmessage.user = notification.user_to_notify
-        logmessage.action = 'notification_failed'
-        logmessage.data = "Sending notification failed to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
-        logmessage.occurred_at = timezone.now()
-        logmessage.save()
+        if notification.incident:
+            logmessage.service_key = notification.incident.service_key
+            logmessage.incident_key = notification.incident
+            logmessage.user = notification.user_to_notify
+            logmessage.action = 'notification_failed'
+            logmessage.data = "Sending notification failed to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+            logmessage.occurred_at = timezone.now()
+            logmessage.save()
         raise
 
