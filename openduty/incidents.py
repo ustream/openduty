@@ -111,7 +111,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
                 incident.event_type = request.DATA["event_type"]
                 incident.description = request.DATA["description"][:100]
-                incident.details = request.DATA["details"]
+                incident.details = request.DATA.get("details", "")
                 incident.occurred_at = timezone.now()
                 try:
                     incident.full_clean()
