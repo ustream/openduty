@@ -1,6 +1,7 @@
 test_sqlite.db
 .idea/*
 env/*
+venv/*
 26env/*
 *.pyc
 database.sql
