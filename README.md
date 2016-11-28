@@ -68,7 +68,7 @@ STATICFILES_DIRS = (
 ```
 sudo easy_install pip
 sudo pip install virtualenv
-virtualenv env
+virtualenv env --python python2.7
 . env/bin/activate
 pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=openduty.settings_dev
