@@ -19,13 +19,16 @@ class IncidentTable(tables.Table):
                                     verbose_name="Service name",
                                     attrs={"td": {"data-title": "Service key"}})
     occurred_at = tables.TemplateColumn(template_name="incidents/column_occurred_at.html",
+					verbose_name="Occurred at",
                                         attrs={"td": {"data-title": "Occurred at"}})
     incident_key = tables.TemplateColumn(template_name="incidents/column_wbr.html",
+					 verbose_name="Incident key",
                                          attrs={"td": {"data-title": "Incident key"}})
     description = tables.TemplateColumn(template_name="incidents/column_wbr.html",
+					verbose_name="Description",
                                         attrs={"td": {"data-title": "Description"}})
-    event_type = tables.Column(attrs={"td": {"data-title": "Event type"}})
-    details = tables.Column(attrs={"td": {"data-title": "Details"}})
+    event_type = tables.Column(verbose_name="Event type",attrs={"td": {"data-title": "Event type"}})
+    details = tables.Column(verbose_name="Details",attrs={"td": {"data-title": "Details"}})
     id = tables.Column(attrs={"td": {"data-title": "Id"}})
 
     filters = (F('service_key','Service filter',
