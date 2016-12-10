@@ -142,7 +142,6 @@ CACHES = {
 
 DATABASES = {
 }
-
 TWILIO_ACCOUNT_SID = TWILIO_SETTINGS.get("SID", "disabled")
 TWILIO_AUTH_TOKEN = TWILIO_SETTINGS.get("token", "disabled")
 

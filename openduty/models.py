@@ -221,7 +221,8 @@ class UserProfile(models.Model):
     slack_room_name = models.CharField(max_length=50)
     prowl_api_key = models.CharField(max_length=50, blank=True)
     prowl_application = models.CharField(max_length=256, blank=True)
-    prowl_url= models.CharField(max_length=512, blank=True)
+    prowl_url = models.CharField(max_length=512, blank=True)
+    rocket_webhook_url = models.CharField(max_length=512, blank=True)
 
 class ServiceSilenced(models.Model):
     service = models.ForeignKey(Service)

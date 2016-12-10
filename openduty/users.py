@@ -85,6 +85,7 @@ def save(request):
         profile.prowl_api_key = request.POST['prowl_api_key']
         profile.prowl_application = request.POST['prowl_application']
         profile.prowl_url = request.POST['prowl_url']
+        profile.rocket_webhook_url = request.POST['rocket_webhook_url']
         profile.save()
 
         return HttpResponseRedirect(reverse('openduty.users.list'))
