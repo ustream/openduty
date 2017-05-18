@@ -13,7 +13,8 @@ from rest_framework import viewsets
 from .serializers import IncidentSerializer
 from rest_framework import status
 from rest_framework.response import Response
-from django.http import HttpResponseRedirect
+from django.core import serializers
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 from django.core.exceptions import ValidationError
@@ -294,6 +295,13 @@ def silence(request, incident_id):
         return HttpResponseRedirect(url)
     except Service.DoesNotExist:
         raise Http404
+
+@require_http_methods(['GET'])
+def active_incidents(request):
+    incidents = Incident.objects.filter(event_type=Incident.TRIGGER)
+    serialized_incidents = serializers.serialize("json", incidents)
+    return HttpResponse(serialized_incidents,
+                        content_type="application/json")
 
 @login_required()
 @require_http_methods(["POST"])
