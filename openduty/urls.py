@@ -89,7 +89,6 @@ urlpatterns = patterns('',
     url(r'^dashboard/service/(.*)$', 'openduty.event_log.get'),
 
     #INCIDENTS
-    url(r'^incidents/active/$', 'openduty.incidents.active_incidents'),
     url(r'^incidents/details/(.*)$', 'openduty.incidents.details'),
     url(r'^incidents/update_type/$', 'openduty.incidents.update_type'),
     url(r'^incidents/forward_incident', 'openduty.incidents.forward_incident'),
